@@ -4,11 +4,14 @@
 #include <ctime>
 #include <sstream>
 #include <vector>
+#include <cmath>
 using namespace std;
 
-string name, x;
+int cash = 1000;
+string name = "username", x;
 string suits[4] = {"C", "S", "H", "D"};
 string values[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+string stack[52] = {"AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC", "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS", "AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH", "AD", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "JD", "QD", "KD"};
 
 int rng(int min, int max) {
 	return min + (rand() % (max - min));
@@ -39,13 +42,19 @@ struct Cards {
 		return hold;
 	}
 
-    void print() {
+    void info() {
         //cout << "There are currently " << n << " cards.\n";
 		for (int i = 0; i < n; i++) {
             cout << cards[i] << " ";
         }
         cout << endl;
     }
+    
+    string print() {
+    	string s;
+    	for (int i = 0; i < n; i++) s += cards[i];
+    	return s;
+	}
     
     void toTop(int x) {
     	hold = cards[x];
@@ -64,7 +73,7 @@ struct Cards {
 	}
     
     void shuffle() {
-    	for (int i = 0; i < 52 * rng(1, 100); i++) {
+    	for (int i = 0; i < 1000000; i++) {
     		toTop(rng(0, n - 1));
     		toBottom(rng(0, n - 1));
 		}
@@ -83,36 +92,75 @@ struct Cards {
 		if (b) toBottom(n);
 		n++;
 	}
+	
+	void refill() {
+		clear();
+		for (int i = 0; i < 52; i++) drop(stack[i]);
+	}
+	
+	int value(string x) {
+		x += " " + print();
+		stringstream ss(x);
+		vector<vector<string>> arr;
+		string line;
+		while (ss >> line) arr[0].push_back(line);
+		for (int i = 0; i < 2; i++) for (string s : arr[i]) cout << s << " ";
+		return 0;
+	}
 };
 
 struct Player {
 	string name;
 	string hold;
 	int cash;
-	Cards cards;
+	Cards hand;
 	
 	Player(string n, int c) : name(n), cash(c) {
-		cards.clear();
+		hand.clear();
 	}
 	
 	void print() {
-		hold = cards.get();
+		hold = hand.get();
 		cout << name << endl
 			 << "\tcash:  " << cash << endl
 			 << "\tcards: " << hold << endl;
 	}
 	
-	void gain(int x) {
-		cash += x;
+	int bet(int x) {
+		cash -= x;
+		return x;
 	}
 };
 
+struct Pot {
+	int cash = 0;
+	vector<int> playerBet;
+	
+	int bet(int x, int id) {
+		cash += x;
+		if (id >= playerBet.size()) playerBet.push_back(x);
+		else playerBet[id] = x;
+		return x;
+	}
+	
+	int clear() {
+		int x = cash;
+		cash = 0;
+		playerBet.clear();
+		return x;
+	}
+};
+
+void display() {
+	// adfs
+}
+
 void poker() {
-	Cards cards;
-	cards.shuffle();
-	int bet = 50;
-	int blind[2];
-    
+	int bet = 1,
+		cbet, blind, n, pId, dealer, turn, round, deal;
+	Cards c;
+	c.value("");
+	getline(cin, x);
 //    do {
 //	    cout << "Poker!\n"
 //	    	 << "Enter your name: ";
@@ -124,59 +172,112 @@ void poker() {
 //		system("cls");
 //	}
 //	while (x != "yes");
-//	
-//	do {
-//		cout << "Welcome to Poker, " << name << "!\n\n"
-//			 << "\t | Play\n\n"
+	
+//	while (true) {
+//		cout << "Welcome to Poker, " << name << "!\n"
+//			 << "Your current cash is $" << cash << "\n\n"
+//			 << "\t | Play\n"
+//			 << "\t | About\n"
+//			 << "\t | Exit\n\n"
 //			 << " > ";
 //		getline(cin, x);
 //		system("cls");
+//		
+//		if (x == "Play") {
+			while (true) {
+				try {
+					cout << "Create a Room:\n"
+						 << "Your current cash is $" << cash << "\n\n"
+					 	 << (bet > cash ? "You do not have enough money!\n" : "")
+					 	 << (bet <= 0 ? "You cannot bet less than $1!\n" : "")
+						 << "Input the initial bet: ";
+					getline(cin, x);
+					bet = stoi(x);
+					if (bet <= cash && bet > 0) break;
+				}
+				catch (exception e) {}
+				system("cls");
+			}
+			system("cls");
+			cout << "Initial Bet: " << bet << "\n\n"
+				 << "creating room...\n\n";
+			n = 2;//rng(2, 11);
+			pId = rng(0, n - 1);
+			vector<Player> player;
+			for (int i = 0; i < n; i++) player.push_back({(i == pId ? name : "Player_" + to_string(i)), cash});
+			for (int i = 0; i < n; i++) if (i != pId) cout << player[i].name << " joined the room.\n";
+			cout << "\npress Enter to continue...";
+			Cards deck;
+			deck.shuffle();
+			Pot pot;
+			Cards table;
+			table.clear();
+			dealer = 1;//rng(0, n - 1);
+			cbet = bet;
+			round = 1;
+			getline(cin, x);
+			system("cls");
+			
+			while (round) {
+				turn = dealer;
+				cbet = bet * pow(2, floor(round / 3));
+				cout << "Round " << round << "\n"
+					 << "Initial Bet: " << cbet << "\n\n"
+					 << player[turn].name << " is small blind. -$" << pot.bet(player[turn].bet(cbet / 2), turn) << endl;
+				turn = turn == (n - 1) ? 0 : turn + 1;
+				cout << player[turn].name << " is big blind. -$" << pot.bet(player[turn].bet(cbet), turn) << "\n\n";
+				cout << "Pot: $" << pot.cash << "\n\n"
+					 << "distributing cards...\n\n"
+					 << "press Enter to continue...";
+				for (int j = 0; j < 2; j++) for (int i = 0; i < n; i++) player[i].hand.drop(deck.pop());
+				turn = turn == (n - 1) ? 0 : turn + 1;
+				deal = 1;
+				getline(cin, x);
+				system("cls");
+				
+				while (deal != 4) {
+					switch (deal) {
+						case 1:
+							cout << "Flop\n";
+							for (int i = 0; i < 3; i++) table.drop(deck.pop());
+							break;
+						case 2:
+							cout << "Turn\n";
+							table.drop(deck.pop());
+							break;
+						case 3:
+							cout << "River\n";
+							table.drop(deck.pop());
+							break;
+					}
+					deck.print();
+					table.print();
+					for (int i = 0; i < n; i++) player[i].print();
+					getline(cin, x);
+					system("cls");
+					deal++;
+				}
+				
+				cout << "Round " << round << " End!\n"
+					 << "press Enter to proceed to the next round... (type [I give up] to exit to main menu)\n\n"
+					 << " > ";
+				getline(cin, x);
+				system("cls");
+				if (x == "I give up") break;
+				round++;
+				cout << "reshuffling...\n\n";
+				pot.clear();
+				table.clear();
+				for (int i = 0; i < n; i++) player[i].hand.clear();
+				deck.refill();
+				deck.shuffle();
+				dealer = dealer == (n - 1) ? 0 : dealer + 1;
+				cout << "press Enter to continue...";
+				getline(cin, x);
+				system("cls");
+			}
+//		}
 //	}
-//	while (x != "Play");
-	
-	Player player[3] = {Player("dude", 1000), Player("dode", 1000), Player(name, 1000)};
-	
-	for (int i = 0; i < 3; i++) player[i].print();
-	cout << endl;
-	
-	blind[0] = 0;
-	blind[1] = 1;
-	cout << "Current Bet: " << bet << endl
-		 << "Small Blind: " << player[blind[0]].name << " -" << bet/2 << endl
-		 << "Big Blind:   " << player[blind[1]].name << " -" << bet << "\n\n";	 
-	player[blind[0]].gain(-bet/2);
-	player[blind[1]].gain(-bet);
-	
-	for (int i = 0; i < 3; i++) player[i].print();
-	cout << endl;
-	
-	cout << "Distributing the cards...\n\n";
-	for (int j = 0; j < 2; j++) for (int i = 0; i < 3; i++) player[i].cards.drop(cards.pop());
-	getline(cin, x);
-	system("cls");
-	
-	while (true) {
-		cout << "Your cards: " << player[2].cards.get() << "\n\n"
-			 << "\t | Fold\n"
-			 << "\t | Call\n"
-			 << "\t | Raise #\n\n"
-			 << " > ";
-		getline(cin, x);
-		istringstream ss(x);
-		vector<string> input;
-		int count = 0;
-		string line;
-		
-		while (getline(x, line)) {
-			if (count >= 2) 
-			if (!line.empty()) input.push_back(line);
-			count++;
-		}
-		
-		if (x == "Fold")
-		if (x == "Fold")
-		if (x == "Fold")		
-	}
 }
 
 int main() {
