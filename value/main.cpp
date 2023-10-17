@@ -4,7 +4,6 @@
 #include <vector>
 #include <windows.h>
 #include <conio.h>
-
 using namespace std;
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
