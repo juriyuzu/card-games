@@ -52,7 +52,7 @@ struct Cards {
     
     string print() {
     	string s;
-    	for (int i = 0; i < n; i++) s += cards[i];
+    	for (int i = 0; i < n; i++) s += cards[i] + " ";
     	return s;
 	}
     
@@ -98,13 +98,75 @@ struct Cards {
 		for (int i = 0; i < 52; i++) drop(stack[i]);
 	}
 	
+	int valueToInt(string s) {
+		for (int i = 0; i < sizeof(values); i++) {
+			if (values[i] == s) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 	int value(string x) {
-		x += " " + print();
+		x = print() + " " + x;
 		stringstream ss(x);
-		vector<vector<string>> arr;
+		vector<vector<string>> arr(4);
+		vector<int> sameInt;
 		string line;
+		
+		// put the strings into the arr[0]
 		while (ss >> line) arr[0].push_back(line);
-		for (int i = 0; i < 2; i++) for (string s : arr[i]) cout << s << " ";
+//		for (int i = 0; i < 2; i++) for (string s : arr[i]) cout << s << " ";
+
+		// split the strings to two parts: arr[1] and arr[2]
+		line = "";
+		for (int i = 0; i < arr[0].size(); i++) {
+			int count = 0;
+			for (int j = 0; j < arr[0][i].size(); j++) {
+				line += arr[0][i][j];
+				if (j >= arr[0][i].size() - 2) {
+					arr[count == 0 ? 1 : 2].push_back(line);
+					line = "";
+					count++;
+				}
+			}
+		}
+//		for (int i = 1; i < 3; i++) for (string s : arr[i]) cout << s << " ";
+
+		// count duplicates in arr[1], put their value in arr[3], their count in sameInt
+		for (int i = 0; i < arr[1].size(); i++) {
+			bool flag = true;
+			for (int j = 0; j < i; j++) {
+				if (arr[1][i] == arr[1][j] && i != j) {
+					flag = false;
+					break;
+				}
+			}
+			if (flag) {
+				for (int j = i + 1; j < arr[1].size(); j++) {
+					if (arr[1][i] == arr[1][j]) {
+						if (flag) {
+							arr[3].push_back(arr[1][i]);
+							sameInt.push_back(1);
+							flag = false;
+						}
+						sameInt[sameInt.size() - 1]++;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < arr[3].size(); i++) cout << arr[3][i] << " " << sameInt[i] << endl;
+		
+		// locate the index of the highest value in arr[3]
+		int maxInd = 0;
+		string maxStr;
+		for (int i = 0; i < sameInt.size(); i++) {
+			if (sameInt[i] > sameInt[maxInd]) maxInd = i;
+			if (sameInt[i] == sameInt[maxInd]) if (valueToInt(arr[3][i]) > valueToInt(arr[3][maxInd])) maxInd = i;
+		}
+		cout << endl << maxInd;
+		
+		
 		return 0;
 	}
 };
@@ -159,8 +221,11 @@ void poker() {
 	int bet = 1,
 		cbet, blind, n, pId, dealer, turn, round, deal;
 	Cards c;
-	c.value("");
-	getline(cin, x);
+	c.clear();
+	c.drop("10C 10D KS QS");
+	c.value("KD 10H KD QS QS");
+	cout << endl;
+	system("pause");
 //    do {
 //	    cout << "Poker!\n"
 //	    	 << "Enter your name: ";
