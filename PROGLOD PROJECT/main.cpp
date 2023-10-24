@@ -29,6 +29,16 @@ struct Cards {
 	vector<string> maxValue;
 	int n = sizeof(cards) / sizeof(cards[0]);
 	
+	int maxCardIndex;
+	int maxStraightCardIndex, maxStraightCount;
+	vector<int> sortedFacesIndex,
+				sortedFacesIndexValues,
+				sortedSuitsIndex,
+				sortedSuitsIndexValues;
+	int maxFlushCount, maxFlushCardIndex;
+	vector<int> duplicateFaceIndexArray, duplicateFacesCountArray;
+	int	maxDuplicateFacesCount, maxDuplicateFaceIndex, handValue;
+	
 	Cards(bool b = false) {
 		if (b) clear();
 	}
@@ -156,7 +166,6 @@ struct Cards {
 		cout << "\n\n" << spacer(50, '-');
 		
 // sort the indexes of arr[1] and put it in sortedFacesIndex
-		vector<int> sortedFacesIndex;
 		for (int i = 0; i < nAll; i++) sortedFacesIndex.push_back(i);
 		for (int i = 0; i < nAll; i++) {
 			for (int j = i + 1; j < nAll; j++) {
@@ -169,30 +178,30 @@ struct Cards {
 				}
 			}
 		}
-		int maxCardIndex = sortedFacesIndex[0];
+		maxCardIndex = sortedFacesIndex[0];
 		cout << "\n\nsortedFacesIndex:\n";
 		for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
 		
 // find maxStraightIndex
-		vector<int> sortedFacesIndexValues;
 		for(int i = 0; i < nAll; i++) sortedFacesIndexValues.push_back(valueToInt(arr[1][(sortedFacesIndex[i])], 2));
 		cout << "\n\nsortedFacesIndexValues:\n";
 		for (int i = 0; i < nAll; i++) cout << sortedFacesIndexValues[i] << " ";
-		int maxCount = 0, count = 0, maxStraightCardIndex, straightCardIndex = 0;
+		int straightCount = 0, straightCardIndex = 0;
+		maxStraightCount = 0, maxStraightCardIndex = 0;
 		for (int i = 0; i < nAll; i++) {
 			if (sortedFacesIndexValues[i] == sortedFacesIndexValues[i + 1] + 1) {
-				count++;
+				straightCount++;
 			}
 			else if (sortedFacesIndexValues[i] != sortedFacesIndexValues[i + 1]) {
-				if (maxCount < count) {
-					maxCount = count;
+				if (maxStraightCount < straightCount) {
+					maxStraightCount = straightCount;
 					maxStraightCardIndex = straightCardIndex;
 				}
 				straightCardIndex = i + 1;
-				count = 0;
+				straightCount = 0;
 			}
 		}
-		cout << "\n\nmaxCount: " << maxCount << "\nmaxStraightCardIndex: " << maxStraightCardIndex;
+		cout << "\n\nmaxStraightCount: " << maxStraightCount << "\nmaxStraightCardIndex: " << maxStraightCardIndex;
 		vector<int> maxStraightIndex;
 		int hold = maxStraightCardIndex;
 		maxStraightIndex.push_back(hold);
@@ -203,11 +212,10 @@ struct Cards {
 			}
 		}
 		cout << "\n\nmaxStraightIndex:\n";
-		for (int i = 0; i < maxCount + 1; i++) cout << maxStraightIndex[i] << " ";
+		for (int i = 0; i < maxStraightCount + 1; i++) cout << maxStraightIndex[i] << " ";
 		cout << "\n\n" << spacer(50, '-');
 
 // sort the indexes of arr[2] and put it in sortedSuitsIndex
-		vector<int> sortedSuitsIndex;
 		for (int i = 0; i < nAll; i++) sortedSuitsIndex.push_back(i);
 		for (int i = 0; i < nAll; i++) {
 			for (int j = i + 1; j < nAll; j++) {
@@ -224,11 +232,11 @@ struct Cards {
 		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndex[i] << " ";
 
 // find maxFlushCardIndex
-		vector<int> sortedSuitsIndexValues;
 		for(int i = 0; i < nAll; i++) sortedSuitsIndexValues.push_back(valueToInt(arr[2][(sortedSuitsIndex[i])], 3));
 		cout << "\n\nsortedSuitsIndexValues:\n";
 		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndexValues[i] << " ";
-		int maxFlushCount = 0, flushCount = 0, maxFlushCardIndex, flushCardIndex = 0, suitCount = 0;
+		int flushCount = 0, flushCardIndex = 0, suitCount = 0;
+		maxFlushCount = 0 , maxFlushCardIndex;
 		for (int i = 0; i < nAll; i++) {
 			if (sortedSuitsIndexValues[i] == sortedSuitsIndexValues[i + 1]) {
 				flushCount++;
@@ -258,7 +266,84 @@ struct Cards {
 		for (int i = 0; i < suitCount; i++) cout << flushesIndex[i] << " ";
 		cout << "\n\n" << spacer(50, '-');
 		
-		return 0;
+// find face duplicates
+		int duplicateFacesAmount = 0, 
+			duplicateFacesCount = 0, 
+			duplicateFaceIndex = 0;
+		maxDuplicateFacesCount = 0, maxDuplicateFaceIndex;
+		for (int i = 0; i < nAll; i++) {
+			if (sortedFacesIndexValues[duplicateFaceIndex] == sortedFacesIndexValues[i + 1]) {
+				duplicateFacesCount++;
+			}
+			else if (sortedFacesIndexValues[duplicateFaceIndex] != sortedFacesIndexValues[i + 1]) {
+				if (maxDuplicateFacesCount < duplicateFacesCount) {
+					maxDuplicateFacesCount = duplicateFacesCount;
+					maxDuplicateFaceIndex = duplicateFaceIndex;	
+				}
+				if (duplicateFacesCount > 0) {
+					duplicateFacesAmount++;
+					duplicateFaceIndexArray.push_back(duplicateFaceIndex);
+					duplicateFacesCountArray.push_back(duplicateFacesCount);
+				}
+				duplicateFaceIndex = i + 1;
+				duplicateFacesCount = 0;
+			}
+		}
+		for (int i = 0; i < duplicateFacesAmount; i++) {
+			for (int j = i + 1; j < duplicateFacesAmount; j++) {
+				if (duplicateFacesCountArray[i] < duplicateFacesCountArray[j] || 
+					(duplicateFacesCountArray[i] == duplicateFacesCountArray[j] && 
+					sortedFacesIndexValues[duplicateFaceIndexArray[i]] < sortedFacesIndexValues[duplicateFaceIndexArray[j]])) {
+					int temp = duplicateFacesCountArray[i];
+					duplicateFacesCountArray[i] = duplicateFacesCountArray[j];
+					duplicateFacesCountArray[j] = temp;
+					temp = duplicateFaceIndexArray[i];
+					duplicateFaceIndexArray[i] = duplicateFaceIndexArray[j];
+					duplicateFaceIndexArray[j] = temp;
+				}
+			}
+		}
+		cout << "\n\nmaxDuplicateFaceIndex: " << maxDuplicateFaceIndex 
+			 << "\nmaxDuplicateFacesCount: " << maxDuplicateFacesCount
+			 << "\nduplicateFacesAmount: " << duplicateFacesAmount
+			 << "\n\nduplicateFaceIndexArray and duplicateFacesCountArray:";
+		for (int i = 0; i < duplicateFacesAmount; i++) {
+			cout << endl << duplicateFaceIndexArray[i] << " " << duplicateFacesCountArray[i];
+		}
+		cout << "\n\n" << spacer(50, '-');
+		
+// find handValue
+		handValue = -1;
+		if (maxStraightCount == 4) {
+			if (maxFlushCount == 5 && sortedFacesIndex[maxStraightCardIndex] == sortedSuitsIndex[maxFlushCardIndex]) {
+				if (valueToInt(arr[1][sortedFacesIndex[maxStraightCardIndex]], 2) == 12) handValue = 9;
+				else handValue = 8;
+			}
+			else handValue = 4;
+		}
+		else if (handValue < 5) {
+			handValue = 0;
+			if (maxFlushCount >= 5) handValue = 5;
+			if (maxDuplicateFacesCount == 1) {
+				bool flag = false;
+				for (int i = 1; i < duplicateFacesAmount; i++) {
+					if (duplicateFacesCountArray[i] == 1) flag = true;
+				}
+				if (flag) handValue = 2;
+				else if (handValue < 1) handValue = 1;
+			}
+			if (maxDuplicateFacesCount == 2) {
+				bool flag = false;
+				for (int i = 1; i < duplicateFacesAmount; i++) {
+					if (duplicateFacesCountArray[i] == 1) flag = true;
+				}
+				if (flag) handValue = 6;
+				else if (handValue < 3) handValue = 3;
+			}
+			if (maxDuplicateFacesCount == 3) handValue = 7;
+		}
+		
+		return handValue;
 	}
 
 };
@@ -314,8 +399,8 @@ void poker() {
 		cbet, n, pId, dealer, turn, round, deal;
 	Cards c;
 	c.clear();
-	c.drop("10H QS QC 3S 4S");
-	cout << endl << c.value("QH 2S 3S QS 10H");
+	c.drop("10H QS AC 10S JS");
+	cout << endl << c.value("QH KS AS QS 10H");
 	cout << endl;
 	system("pause");
 	system("cls");
@@ -444,3 +529,4 @@ int main() {
 	
 	return 0;
 }
+
