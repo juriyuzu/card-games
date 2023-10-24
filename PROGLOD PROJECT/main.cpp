@@ -149,11 +149,8 @@ struct Cards {
 		}
 		
 // sort the indexes of arr[1] and put it in sortedFacesIndex
-		vector<int> sortedFacesIndex, sortedSuitsIndex;
-		for (int i = 0; i < nAll; i++) {
-			sortedFacesIndex.push_back(i);
-			sortedSuitsIndex.push_back(i);
-		}
+		vector<int> sortedFacesIndex;
+		for (int i = 0; i < nAll; i++) sortedFacesIndex.push_back(i);
 		for (int i = 0; i < nAll; i++) {
 			for (int j = i + 1; j < nAll; j++) {
 				if ((valueToInt(arr[1][sortedFacesIndex[j]], 2) > valueToInt(arr[1][sortedFacesIndex[i]], 2)) || 
@@ -164,21 +161,10 @@ struct Cards {
 					sortedFacesIndex[j] = temp;
 				}
 			}
-			for (int j = i + 1; j < nAll; j++) {
-				if ((valueToInt(arr[1][sortedSuitsIndex[j]], 3) > valueToInt(arr[1][sortedSuitsIndex[i]], 3)) || 
-				((valueToInt(arr[1][sortedSuitsIndex[j]], 3) == valueToInt(arr[1][sortedSuitsIndex[i]], 3)) && 
-				(valueToInt(arr[2][sortedSuitsIndex[j]], 2) > valueToInt(arr[2][sortedSuitsIndex[i]], 2)))) {
-					int temp = sortedSuitsIndex[i];
-					sortedSuitsIndex[i] = sortedSuitsIndex[j];
-					sortedSuitsIndex[j] = temp;
-				}
-			}
 		}
 		int maxCardIndex = sortedFacesIndex[0];
 		cout << "\n\nsortedFacesIndex:\n";
 		for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
-		cout << "\n\nsortedSuitsIndex:\n";
-		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndex[i] << " ";
 		
 // find maxStraightIndex
 		vector<int> sortedFacesIndexValues;
@@ -211,9 +197,57 @@ struct Cards {
 		}
 		cout << "\n\nmaxStraightIndex:\n";
 		for (int i = 0; i < maxCount + 1; i++) cout << maxStraightIndex[i] << " ";
-		
+
+// sort the indexes of arr[2] and put it in sortedSuitsIndex
+		vector<int> sortedSuitsIndex;
+		for (int i = 0; i < nAll; i++) sortedSuitsIndex.push_back(i);
+		for (int i = 0; i < nAll; i++) {
+			for (int j = i + 1; j < nAll; j++) {
+				if ((valueToInt(arr[2][sortedSuitsIndex[j]], 3) > valueToInt(arr[2][sortedSuitsIndex[i]], 3)) || 
+				((valueToInt(arr[2][sortedSuitsIndex[j]], 3) == valueToInt(arr[2][sortedSuitsIndex[i]], 3)) && 
+				(valueToInt(arr[1][sortedSuitsIndex[j]], 2) > valueToInt(arr[1][sortedSuitsIndex[i]], 2)))) {
+					int temp = sortedSuitsIndex[i];
+					sortedSuitsIndex[i] = sortedSuitsIndex[j];
+					sortedSuitsIndex[j] = temp;
+				}
+			}
+		}
+		cout << "\n\nsortedSuitsIndex:\n";
+		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndex[i] << " ";
+
 // find maxFlushIndex
-		//asdf
+		vector<int> sortedSuitsIndexValues;
+		for(int i = 0; i < nAll; i++) sortedSuitsIndexValues.push_back(valueToInt(arr[2][(sortedSuitsIndex[i])], 3));
+		cout << "\n\nsortedSuitsIndexValues:\n";
+		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndexValues[i] << " ";
+		int maxFlushCount = 0, flushCount = 0, maxFlushCardIndex, flushCardIndex = 0, suitCount = 0;
+		for (int i = 0; i < nAll; i++) {
+			if (sortedSuitsIndexValues[i] == sortedSuitsIndexValues[i + 1]) {
+				flushCount++;
+			}
+			else if (sortedSuitsIndexValues[i] != sortedSuitsIndexValues[i + 1]) {
+				if (maxFlushCount < flushCount) {
+					maxFlushCount = flushCount;
+					maxFlushCardIndex = flushCardIndex;
+				}
+				flushCardIndex = i + 1;
+				flushCount = 0;
+				suitCount++;
+			}
+		}
+		cout << "\n\nmaxFlushCount: " << maxFlushCount << "\nmaxFlushCardIndex: " << maxFlushCardIndex << "\nsuitCount: " << suitCount;
+		vector<int> flushesIndex;
+		hold = 0;
+		flushesIndex.push_back(hold);
+		for (int i = 0; i < nAll; i++) {
+			if (sortedSuitsIndexValues[hold] - 1 == sortedSuitsIndexValues[i + 1]) {
+				flushesIndex.push_back(i + 1);
+				hold = i + 1;
+			}
+		}
+		cout << "\n\nflushesIndex:\n";
+		for (int i = 0; i < suitCount; i++) cout << flushesIndex[i] << " ";
+		
 		return 0;
 	}
 
@@ -271,7 +305,7 @@ void poker() {
 	Cards c;
 	c.clear();
 	c.drop("10H QS QC 3S 4S");
-	cout << endl << c.value("QH 2H 3H QH 10H");
+	cout << endl << c.value("QH 2S 3S QS 10H");
 	cout << endl;
 	system("pause");
 //    do {
