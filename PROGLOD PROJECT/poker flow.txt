@@ -1,0 +1,81 @@
+# Poker Flowchart
+
+Notes:
+
+the player bet function returns the value betted
+
+---
+
+Input $name
+
+“Create Room”
+
+Input $initialBet
+
+“creating room…”
+
+Set $x to random 1 - 3
+
+Loop $i to 3
+
+Create Player[] object
+
+If $i is $x: set Player values from user
+
+else: set Player values automatically
+
+“playerName1 has joined the room”
+
+“playerName2 has joined the room”
+
+Set $x to random 1 - 3
+
+Set $currentBet to $initialBet
+
+Create Pot object
+
+Pot.add(Player$x.bet($currentBet), $x)
+
+“Player$x++.name is Small Blind -$currentBet/2”
+
+if $x == 4, x = 1
+
+Pot.add(Player$x.bet($currentBet), $x)
+
+“Player$x++.name is Big Blind -$currentBet”
+
+if $x == 4, x = 1
+
+Loop true
+
+  if $x not in $fold[]
+
+    Ask Player$x to input:
+
+ |  |  | Check (if Player$x.bet == $currentBet)
+
+— — — — Add $x to $call[]
+
+— — — Call (if Player$x.bet != $currentBet)
+
+— — — — Pot.add(Player$x.bet($currentBet - Player$x.bet))
+
+— — — — Add $x to $call[]
+
+— — — Fold
+
+— — — — Add $x to $fold[]
+
+— — — Raise #
+
+— — — — Clear $call[]
+
+— — — — Add $x to $call[]
+
+— — — — $currentBet += #
+
+— — — — Pot.add(Player$x.bet($currentBet - Player$x.bet))
+
+— $x++
+
+— if $x == 4, x = 1
