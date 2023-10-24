@@ -13,6 +13,12 @@ string suits[4] = {"C", "S", "H", "D"};
 string faces[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 string stack[52] = {"AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC", "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS", "AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH", "AD", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "JD", "QD", "KD"};
 
+string spacer(int n, char c = ' ') {
+	string s = "";
+	for (int i = 0; i < n; i++) s += c;
+	return s;
+}
+
 int rng(int min, int max) {
 	return min + (rand() % (max - min));
 }
@@ -147,6 +153,7 @@ struct Cards {
 			cout << endl;
 			for (string s : arr[i]) cout << s << " ";
 		}
+		cout << "\n\n" << spacer(50, '-');
 		
 // sort the indexes of arr[1] and put it in sortedFacesIndex
 		vector<int> sortedFacesIndex;
@@ -197,6 +204,7 @@ struct Cards {
 		}
 		cout << "\n\nmaxStraightIndex:\n";
 		for (int i = 0; i < maxCount + 1; i++) cout << maxStraightIndex[i] << " ";
+		cout << "\n\n" << spacer(50, '-');
 
 // sort the indexes of arr[2] and put it in sortedSuitsIndex
 		vector<int> sortedSuitsIndex;
@@ -215,7 +223,7 @@ struct Cards {
 		cout << "\n\nsortedSuitsIndex:\n";
 		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndex[i] << " ";
 
-// find maxFlushIndex
+// find maxFlushCardIndex
 		vector<int> sortedSuitsIndexValues;
 		for(int i = 0; i < nAll; i++) sortedSuitsIndexValues.push_back(valueToInt(arr[2][(sortedSuitsIndex[i])], 3));
 		cout << "\n\nsortedSuitsIndexValues:\n";
@@ -229,10 +237,11 @@ struct Cards {
 				if (maxFlushCount < flushCount) {
 					maxFlushCount = flushCount;
 					maxFlushCardIndex = flushCardIndex;
+					suitCount++;
 				}
 				flushCardIndex = i + 1;
 				flushCount = 0;
-				suitCount++;
+				
 			}
 		}
 		cout << "\n\nmaxFlushCount: " << maxFlushCount << "\nmaxFlushCardIndex: " << maxFlushCardIndex << "\nsuitCount: " << suitCount;
@@ -247,6 +256,7 @@ struct Cards {
 		}
 		cout << "\n\nflushesIndex:\n";
 		for (int i = 0; i < suitCount; i++) cout << flushesIndex[i] << " ";
+		cout << "\n\n" << spacer(50, '-');
 		
 		return 0;
 	}
@@ -308,6 +318,7 @@ void poker() {
 	cout << endl << c.value("QH 2S 3S QS 10H");
 	cout << endl;
 	system("pause");
+	system("cls");
 //    do {
 //	    cout << "Poker!\n"
 //	    	 << "Enter your name: ";
