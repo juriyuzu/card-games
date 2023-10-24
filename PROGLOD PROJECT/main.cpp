@@ -394,6 +394,15 @@ void display() {
 	// adfs
 }
 
+int pokerTurn(bool isUser) {
+	int choice;
+	if (isUser) {
+		cout << "1. Check or Call\n2. Raise\n3. Fold";
+		getline(cin, x);
+	}
+	return choice;
+}
+
 void poker() {
 	int bet = 1,
 		cbet, n, pId, dealer, turn, round, deal;
@@ -402,7 +411,7 @@ void poker() {
 	c.drop("10H QS AC 10S JS");
 	cout << endl << c.value("QH KS AS QS 10H");
 	cout << endl;
-	system("pause");
+//	system("pause");
 	system("cls");
 //    do {
 //	    cout << "Poker!\n"
@@ -449,7 +458,6 @@ void poker() {
 			vector<Player> player;
 			for (int i = 0; i < n; i++) player.push_back({(i == pId ? name : "Player_" + to_string(i)), cash});
 			for (int i = 0; i < n; i++) if (i != pId) cout << player[i].name << " joined the room.\n";
-			cout << "\npress Enter to continue...";
 			Cards deck;
 			deck.shuffle();
 			Pot pot;
@@ -458,7 +466,7 @@ void poker() {
 			dealer = 1;//rng(0, n - 1);
 			cbet = bet;
 			round = 1;
-			getline(cin, x);
+			system("pause");
 			system("cls");
 			
 			while (round) {
@@ -470,16 +478,18 @@ void poker() {
 				turn = turn == (n - 1) ? 0 : turn + 1;
 				cout << player[turn].name << " is big blind. -$" << pot.bet(player[turn].bet(cbet), turn) << "\n\n";
 				cout << "Pot: $" << pot.cash << "\n\n"
-					 << "distributing cards...\n\n"
-					 << "press Enter to continue...";
+					 << "distributing cards...\n\n";
 				for (int j = 0; j < 2; j++) for (int i = 0; i < n; i++) player[i].hand.drop(deck.pop());
 				turn = turn == (n - 1) ? 0 : turn + 1;
-				deal = 1;
-				getline(cin, x);
+				deal = 0;
+				system("pause");
 				system("cls");
 				
 				while (deal != 4) {
 					switch (deal) {
+						case 0:
+							cout << "Betting...\n";
+							break;
 						case 1:
 							cout << "Flop\n";
 							for (int i = 0; i < 3; i++) table.drop(deck.pop());
@@ -493,12 +503,40 @@ void poker() {
 							table.drop(deck.pop());
 							break;
 					}
-					deck.print();
-					table.print();
+					deck.info();
+					table.info();
 					for (int i = 0; i < n; i++) player[i].print();
-					getline(cin, x);
+					
+					int calls = 0, raise = 0, folds;
+					while (true) {
+						cout << player[turn].name << "'s Turn: " << player[turn].name;
+						int choice;
+						switch (choice) {
+							case 0: // check, call
+								if (pot.playerBet[turn] < cbet) {
+									pot.bet(player[turn].bet(cbet), turn);
+									cout << " calls.\n";
+								}
+								else cout << " checks.\n";
+								calls++;
+								break;
+							case 1: // raise
+								cbet += raise;
+								pot.bet(player[turn].bet(cbet), turn)
+								cout << " raises.\n";
+								break;
+							case 2: // fold
+								cout << " folds.\n";
+								folds++;
+						}
+						if (calls == n - folds || n - folds == 1) break;
+						else turn++;
+					}
+					
+					system("pause");
 					system("cls");
 					deal++;
+					if (n - folds == 1) break;
 				}
 				
 				cout << "Round " << round << " End!\n"
@@ -515,8 +553,7 @@ void poker() {
 				deck.refill();
 				deck.shuffle();
 				dealer = dealer == (n - 1) ? 0 : dealer + 1;
-				cout << "press Enter to continue...";
-				getline(cin, x);
+				system("pause");
 				system("cls");
 			}
 //		}
