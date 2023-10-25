@@ -4,7 +4,7 @@
 #include <ctime>
 #include <sstream>
 #include <vector>
-#include <cmath>
+// #include <cmath>
 using namespace std;
 
 int cash = 1000;
@@ -378,7 +378,7 @@ struct Pot {
 	int bet(int x, int id) {
 		cash += x;
 		if (id >= playerBet.size()) playerBet.push_back(x);
-		else playerBet[id] = x;
+		else playerBet[id] += x;
 		return x;
 	}
 	
@@ -409,10 +409,8 @@ bool inputChecker(string x, string y) {
 		}
 	}
 	for (string s : array) {
-	    cout << s << " ";
 	    if (x == s) b = true;
 	}
-	cout << "\n\n";
 	return b;
 }
 
@@ -420,12 +418,13 @@ int pokerTurn(bool isUser) {
 	int choice;
 	if (isUser) {
 		do {
-			cout << "1. Check or Call\n2. Raise\n3. Fold";
+			cout << "\n1. Check or Call\n2. Raise\n3. Fold\n > ";
 			getline(cin, x);
 		}
-		while (inputChecker(x, "1;2;3;"))
-		
+		while (!inputChecker(x, "1;2;3;"));
+		choice = stoi(x);
 	}
+	else choice = 1;
 	return choice;
 }
 
@@ -479,7 +478,7 @@ void poker() {
 			system("cls");
 			cout << "Initial Bet: " << bet << "\n\n"
 				 << "creating room...\n\n";
-			n = 2;//rng(2, 11);
+			n = rng(2, 9);
 			pId = rng(0, n - 1);
 			vector<Player> player;
 			for (int i = 0; i < n; i++) player.push_back({(i == pId ? name : "Player_" + to_string(i)), cash});
@@ -507,11 +506,16 @@ void poker() {
 					 << "distributing cards...\n\n";
 				for (int j = 0; j < 2; j++) for (int i = 0; i < n; i++) player[i].hand.drop(deck.pop());
 				turn = turn == (n - 1) ? 0 : turn + 1;
+				for (int i = 0; i < n - 2; i++) {
+				    pot.bet(player[turn].bet(0), turn);
+				    turn = turn == (n - 1) ? 0 : turn + 1;
+				}
 				deal = 0;
 				system("pause");
 				system("cls");
 				
 				while (deal != 4) {
+				    cout << "\n\n";
 					switch (deal) {
 						case 0:
 							cout << "Betting...\n";
@@ -535,28 +539,29 @@ void poker() {
 					
 					int calls = 0, raise = 0, folds;
 					while (true) {
+						int choice = pokerTurn(turn == pId);
 						cout << player[turn].name << "'s Turn: " << player[turn].name;
-						int choice;
 						switch (choice) {
-							case 0: // check, call
+							case 1: // check, call
 								if (pot.playerBet[turn] < cbet) {
-									pot.bet(player[turn].bet(cbet), turn);
+									pot.bet(player[turn].bet(cbet - pot.playerBet[turn]), turn);
 									cout << " calls.\n";
 								}
 								else cout << " checks.\n";
 								calls++;
 								break;
-							case 1: // raise
+							case 2: // raise
 								cbet += raise;
-								pot.bet(player[turn].bet(cbet), turn)
+								calls = 1;
+								pot.bet(player[turn].bet(cbet), turn);
 								cout << " raises.\n";
 								break;
-							case 2: // fold
+							case 3: // fold
 								cout << " folds.\n";
 								folds++;
 						}
+						turn = turn == (n - 1) ? 0 : turn + 1;
 						if (calls == n - folds || n - folds == 1) break;
-						else turn++;
 					}
 					
 					system("pause");
@@ -592,4 +597,3 @@ int main() {
 	
 	return 0;
 }
-
