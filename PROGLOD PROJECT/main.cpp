@@ -400,14 +400,19 @@ bool inputChecker(string x, string y) {
 	int start = 0, count = 0;
 	for (int i = 0; i < y.size(); i++) {
 		if (y[i] == ';') {
-			count++;
-			for (int j = start; j <= i; j++) {
+			for (int j = start; j < i; j++) {
 				if (count >= array.size()) array.push_back("");
 				array[count] += y[j];
 			}
+			count++;
 			start = i + 1;
 		}
 	}
+	for (string s : array) {
+	    cout << s << " ";
+	    if (x == s) b = true;
+	}
+	cout << "\n\n";
 	return b;
 }
 
@@ -418,7 +423,7 @@ int pokerTurn(bool isUser) {
 			cout << "1. Check or Call\n2. Raise\n3. Fold";
 			getline(cin, x);
 		}
-		while (x != 1)
+		while (inputChecker(x, "1;2;3;"))
 		
 	}
 	return choice;
