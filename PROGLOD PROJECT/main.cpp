@@ -394,11 +394,32 @@ void display() {
 	// adfs
 }
 
+bool inputChecker(string x, string y) {
+	bool b = false;
+	vector<string> array;
+	int start = 0, count = 0;
+	for (int i = 0; i < y.size(); i++) {
+		if (y[i] == ';') {
+			count++;
+			for (int j = start; j <= i; j++) {
+				if (count >= array.size()) array.push_back("");
+				array[count] += y[j];
+			}
+			start = i + 1;
+		}
+	}
+	return b;
+}
+
 int pokerTurn(bool isUser) {
 	int choice;
 	if (isUser) {
-		cout << "1. Check or Call\n2. Raise\n3. Fold";
-		getline(cin, x);
+		do {
+			cout << "1. Check or Call\n2. Raise\n3. Fold";
+			getline(cin, x);
+		}
+		while (x != 1)
+		
 	}
 	return choice;
 }
