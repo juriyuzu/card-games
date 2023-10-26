@@ -240,6 +240,7 @@ struct Cards {
 //		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndex[i] << " ";
 
 // find maxFlushCardIndex
+		cout << "check-2\n";
 		for(int i = 0; i < nAll; i++) sortedSuitsIndexValues.push_back(valueToInt(arr[2][(sortedSuitsIndex[i])], 3));
 //		cout << "\n\nsortedSuitsIndexValues:\n";
 //		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndexValues[i] << " ";
@@ -265,6 +266,7 @@ struct Cards {
 	        }
 		}
 //		cout << "\n\nmaxFlushCount: " << maxFlushCount << "\nmaxFlushCardIndex: " << maxFlushCardIndex << "\nsuitCount: " << suitCount;
+		cout << "check-1\n";
 		maxFlushCardValue = valueToInt(arr[0][sortedSuitsIndex[maxFlushCardIndex]], 1);
 		vector<int> flushesIndex;
 		hold = 0;
@@ -282,10 +284,11 @@ struct Cards {
 //		cout << "\n\n" << spacer(50, '-');
 		
 // find face duplicates
+		cout << "check0\n";
 		int duplicateFacesAmount = 0, 
 			duplicateFacesCount = 0, 
 			duplicateFaceIndex = 0;
-		maxDuplicateFacesCount = 0, maxDuplicateFaceIndex = 0;
+		maxDuplicateFacesCount = 0, maxDuplicateFaceIndex;
 		for (int i = 0; i < nAll; i++) {
 			if (sortedFacesIndexValues[duplicateFaceIndex] == sortedFacesIndexValues[i + 1]) {
 				duplicateFacesCount++;
