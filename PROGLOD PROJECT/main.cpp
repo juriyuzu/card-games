@@ -11,7 +11,7 @@ int cash = 1000;
 string name = "username", x;
 string suits[4] = {"C", "S", "H", "D"};
 string faces[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-string stack[52] = {"AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC", "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS", "AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH", "AD", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "JD", "QD", "KD"};
+string stack[52] = {"2C", "2S", "2H", "2D", "3C", "3S", "3H", "3D", "4C", "4S", "4H", "4D", "5C", "5S", "5H", "5D", "6C", "6S", "6H", "6D", "7C", "7S", "7H", "7D", "8C", "8S", "8H", "8D", "9C", "9S", "9H", "9D", "10C", "10S", "10H", "10D", "JC", "JS", "JH", "JD", "QC", "QS", "QH", "QD", "KC", "KS", "KH", "KD", "AC", "AS", "AH", "AD"};
 
 string spacer(int n, char c = ' ') {
 	string s = "";
@@ -20,16 +20,16 @@ string spacer(int n, char c = ' ') {
 }
 
 int rng(int min, int max) {
-	return min + (rand() % (max - min));
+	return min + (rand() % (max - min + 1));
 }
 
 struct Cards {
-	string cards[52] = {"AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC", "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS", "AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH", "AD", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "JD", "QD", "KD"};
+	string cards[52] = {"2C", "2S", "2H", "2D", "3C", "3S", "3H", "3D", "4C", "4S", "4H", "4D", "5C", "5S", "5H", "5D", "6C", "6S", "6H", "6D", "7C", "7S", "7H", "7D", "8C", "8S", "8H", "8D", "9C", "9S", "9H", "9D", "10C", "10S", "10H", "10D", "JC", "JS", "JH", "JD", "QC", "QS", "QH", "QD", "KC", "KS", "KH", "KD", "AC", "AS", "AH", "AD"};
 	string hold;
 	vector<string> maxValue;
 	int n = sizeof(cards) / sizeof(cards[0]);
 	
-	int maxCardIndex;
+	int highCardValue, maxDuplicateCardValue, maxStraightCardValue, maxFlushCardValue;
 	int maxStraightCardIndex, maxStraightCount;
 	vector<int> sortedFacesIndex,
 				sortedFacesIndexValues,
@@ -50,7 +50,7 @@ struct Cards {
 		n = 0;
 	}
 	
-	string get() {
+	string getCards() {
 		hold = "";
 		for (int i = 0; i < n; i++) {
 			hold += cards[i];
@@ -66,12 +66,6 @@ struct Cards {
         }
         cout << endl;
     }
-    
-    string print() {
-    	string s;
-    	for (int i = 0; i < n; i++) s += cards[i] + " ";
-    	return s;
-	}
     
     void toTop(int x) {
     	hold = cards[x];
@@ -113,6 +107,7 @@ struct Cards {
 	void refill() {
 		clear();
 		for (int i = 0; i < 52; i++) drop(stack[i]);
+		n = sizeof(cards) / sizeof(cards[0]);
 	}
 	
 	int valueToInt(string s, int c) {
@@ -133,17 +128,27 @@ struct Cards {
 		return -1;
 	}
 
-	int value(string x) {
-		x = print() + " " + x;
+	int value(string x = "") {
+		sortedFacesIndex.clear();
+		sortedFacesIndexValues.clear();
+		sortedSuitsIndex.clear();
+		sortedSuitsIndexValues.clear();
+		duplicateFaceIndexArray.clear();
+		duplicateFacesCountArray.clear();
+			
+		if (n == 0 && x == "") return -1;
+		
+		x = getCards() + " " + x;
 		stringstream ss(x);
 		vector<vector<string>> arr(3);
 		string line;
 		
+//		cout << "\n\n";
 // put the strings into arr[0]
 		while (ss >> line) arr[0].push_back(line);
 		int nAll = arr[0].size();
-		cout << "arr[0]:\n";
-		for (int i = 0; i < 2; i++) for (string s : arr[i]) cout << s << " ";
+//		cout << "arr[0]: " << arr[0].size() << "\n";
+//		for (int i = 0; i < 2; i++) for (string s : arr[i]) cout << s << " ";
 
 // split the strings to two parts: arr[1] for the faces and arr[2] for the suits
 		line = "";
@@ -158,15 +163,17 @@ struct Cards {
 				}
 			}
 		}
-		cout << "\n\narr[1] and arr[2]:";
-		for (int i = 1; i < 3; i++) {
-			cout << endl;
-			for (string s : arr[i]) cout << s << " ";
-		}
-		cout << "\n\n" << spacer(50, '-');
+//		cout << "\n\narr[1] and arr[2]:";
+//		for (int i = 1; i < 3; i++) {
+//			cout << endl;
+//			for (string s : arr[i]) cout << s << " ";
+//		}
+//		cout << "\n\n" << spacer(50, '-');
 		
 // sort the indexes of arr[1] and put it in sortedFacesIndex
 		for (int i = 0; i < nAll; i++) sortedFacesIndex.push_back(i);
+//		cout << "\n\nsortedFacesIndex:\n";
+//		for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
 		for (int i = 0; i < nAll; i++) {
 			for (int j = i + 1; j < nAll; j++) {
 				if ((valueToInt(arr[1][sortedFacesIndex[j]], 2) > valueToInt(arr[1][sortedFacesIndex[i]], 2)) || 
@@ -178,14 +185,14 @@ struct Cards {
 				}
 			}
 		}
-		maxCardIndex = sortedFacesIndex[0];
-		cout << "\n\nsortedFacesIndex:\n";
-		for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
+		highCardValue = valueToInt(arr[0][sortedFacesIndex[0]], 1);
+//		cout << "\n\nsortedFacesIndex:\n";
+//		for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
 		
 // find maxStraightIndex
 		for(int i = 0; i < nAll; i++) sortedFacesIndexValues.push_back(valueToInt(arr[1][(sortedFacesIndex[i])], 2));
-		cout << "\n\nsortedFacesIndexValues:\n";
-		for (int i = 0; i < nAll; i++) cout << sortedFacesIndexValues[i] << " ";
+//		cout << "\n\nsortedFacesIndexValues:\n";
+//		for (int i = 0; i < nAll; i++) cout << sortedFacesIndexValues[i] << " ";
 		int straightCount = 0, straightCardIndex = 0;
 		maxStraightCount = 0, maxStraightCardIndex = 0;
 		for (int i = 0; i < nAll; i++) {
@@ -201,7 +208,8 @@ struct Cards {
 				straightCount = 0;
 			}
 		}
-		cout << "\n\nmaxStraightCount: " << maxStraightCount << "\nmaxStraightCardIndex: " << maxStraightCardIndex;
+		maxStraightCardValue = valueToInt(arr[0][sortedFacesIndex[maxStraightCardIndex]], 1);
+//		cout << "\n\nmaxStraightCount: " << maxStraightCount << "\nmaxStraightCardIndex: " << maxStraightCardIndex;
 		vector<int> maxStraightIndex;
 		int hold = maxStraightCardIndex;
 		maxStraightIndex.push_back(hold);
@@ -211,9 +219,9 @@ struct Cards {
 				hold = i + 1;
 			}
 		}
-		cout << "\n\nmaxStraightIndex:\n";
-		for (int i = 0; i < maxStraightCount + 1; i++) cout << maxStraightIndex[i] << " ";
-		cout << "\n\n" << spacer(50, '-');
+//		cout << "\n\nmaxStraightIndex:\n";
+//		for (int i = 0; i < maxStraightCount + 1; i++) cout << maxStraightIndex[i] << " ";
+//		cout << "\n\n" << spacer(50, '-');
 
 // sort the indexes of arr[2] and put it in sortedSuitsIndex
 		for (int i = 0; i < nAll; i++) sortedSuitsIndex.push_back(i);
@@ -228,49 +236,56 @@ struct Cards {
 				}
 			}
 		}
-		cout << "\n\nsortedSuitsIndex:\n";
-		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndex[i] << " ";
+//		cout << "\n\nsortedSuitsIndex:\n";
+//		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndex[i] << " ";
 
 // find maxFlushCardIndex
 		for(int i = 0; i < nAll; i++) sortedSuitsIndexValues.push_back(valueToInt(arr[2][(sortedSuitsIndex[i])], 3));
-		cout << "\n\nsortedSuitsIndexValues:\n";
-		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndexValues[i] << " ";
+//		cout << "\n\nsortedSuitsIndexValues:\n";
+//		for (int i = 0; i < nAll; i++) cout << sortedSuitsIndexValues[i] << " ";
 		int flushCount = 0, flushCardIndex = 0, suitCount = 0;
 		maxFlushCount = 0 , maxFlushCardIndex;
-		for (int i = 0; i < nAll; i++) {
-			if (sortedSuitsIndexValues[i] == sortedSuitsIndexValues[i + 1]) {
-				flushCount++;
-			}
-			else if (sortedSuitsIndexValues[i] != sortedSuitsIndexValues[i + 1]) {
-				if (maxFlushCount < flushCount) {
-					maxFlushCount = flushCount;
-					maxFlushCardIndex = flushCardIndex;
+		bool flag = 1;
+		for (int i = 0; i < nAll - 1; i++) {
+		    if (sortedSuitsIndexValues[i] == sortedSuitsIndexValues[i + 1]) {
+		        flushCount++;
+				if (flag) {
 					suitCount++;
-				}
+					flag = false;
+				} 
+		    } 
+			else {
+		        flag = true;
 				flushCardIndex = i + 1;
-				flushCount = 0;
-				
-			}
+		        flushCount = 0;
+		    }
+			if (maxFlushCount < flushCount) {
+	            maxFlushCount = flushCount;
+	            maxFlushCardIndex = flushCardIndex;
+	        }
 		}
-		cout << "\n\nmaxFlushCount: " << maxFlushCount << "\nmaxFlushCardIndex: " << maxFlushCardIndex << "\nsuitCount: " << suitCount;
+//		cout << "\n\nmaxFlushCount: " << maxFlushCount << "\nmaxFlushCardIndex: " << maxFlushCardIndex << "\nsuitCount: " << suitCount;
+		maxFlushCardValue = valueToInt(arr[0][sortedSuitsIndex[maxFlushCardIndex]], 1);
 		vector<int> flushesIndex;
 		hold = 0;
-		flushesIndex.push_back(hold);
-		for (int i = 0; i < nAll; i++) {
-			if (sortedSuitsIndexValues[hold] - 1 == sortedSuitsIndexValues[i + 1]) {
-				flushesIndex.push_back(i + 1);
-				hold = i + 1;
-			}
+		for (int i = 1; i < nAll; i++) {
+		    if (sortedSuitsIndexValues[i] == sortedSuitsIndexValues[hold]) {
+		        if (flushesIndex.empty() || flushesIndex[flushesIndex.size() - 1] != hold) {
+		            flushesIndex.push_back(hold);
+		        }
+		    } else {
+		        hold = i;
+		    }
 		}
-		cout << "\n\nflushesIndex:\n";
-		for (int i = 0; i < suitCount; i++) cout << flushesIndex[i] << " ";
-		cout << "\n\n" << spacer(50, '-');
+//		cout << "\n\nflushesIndex:\n";
+//		for (int i = 0; i < suitCount; i++) cout << flushesIndex[i] << " ";
+//		cout << "\n\n" << spacer(50, '-');
 		
 // find face duplicates
 		int duplicateFacesAmount = 0, 
 			duplicateFacesCount = 0, 
 			duplicateFaceIndex = 0;
-		maxDuplicateFacesCount = 0, maxDuplicateFaceIndex;
+		maxDuplicateFacesCount = 0, maxDuplicateFaceIndex = 0;
 		for (int i = 0; i < nAll; i++) {
 			if (sortedFacesIndexValues[duplicateFaceIndex] == sortedFacesIndexValues[i + 1]) {
 				duplicateFacesCount++;
@@ -289,6 +304,14 @@ struct Cards {
 				duplicateFacesCount = 0;
 			}
 		}
+		cout << "check\n";
+		for (int i = 0; i < nAll; i++) cout << arr[0][i] << " ";
+		cout << "\n";
+		for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
+		cout << "\n" << maxDuplicateFaceIndex << "\n";
+		cout << sortedFacesIndex[maxDuplicateFaceIndex] << "\n";
+		maxDuplicateCardValue = valueToInt(arr[0][sortedFacesIndex[maxDuplicateFaceIndex]], 1);
+		cout << "check2\n";
 		for (int i = 0; i < duplicateFacesAmount; i++) {
 			for (int j = i + 1; j < duplicateFacesAmount; j++) {
 				if (duplicateFacesCountArray[i] < duplicateFacesCountArray[j] || 
@@ -303,19 +326,19 @@ struct Cards {
 				}
 			}
 		}
-		cout << "\n\nmaxDuplicateFaceIndex: " << maxDuplicateFaceIndex 
-			 << "\nmaxDuplicateFacesCount: " << maxDuplicateFacesCount
-			 << "\nduplicateFacesAmount: " << duplicateFacesAmount
-			 << "\n\nduplicateFaceIndexArray and duplicateFacesCountArray:";
-		for (int i = 0; i < duplicateFacesAmount; i++) {
-			cout << endl << duplicateFaceIndexArray[i] << " " << duplicateFacesCountArray[i];
-		}
-		cout << "\n\n" << spacer(50, '-');
+//		cout << "\n\nmaxDuplicateFaceIndex: " << maxDuplicateFaceIndex 
+//			 << "\nmaxDuplicateFacesCount: " << maxDuplicateFacesCount
+//			 << "\nduplicateFacesAmount: " << duplicateFacesAmount
+//			 << "\n\nduplicateFaceIndexArray and duplicateFacesCountArray:";
+//		for (int i = 0; i < duplicateFacesAmount; i++) {
+//			cout << endl << duplicateFaceIndexArray[i] << " " << duplicateFacesCountArray[i];
+//		}
+//		cout << "\n\n" << spacer(50, '-');
 		
 // find handValue
 		handValue = -1;
-		if (maxStraightCount == 4) {
-			if (maxFlushCount == 5 && sortedFacesIndex[maxStraightCardIndex] == sortedSuitsIndex[maxFlushCardIndex]) {
+		if (maxStraightCount >= 4) {
+			if (maxFlushCount >= 5 && sortedFacesIndex[maxStraightCardIndex] == sortedSuitsIndex[maxFlushCardIndex]) {
 				if (valueToInt(arr[1][sortedFacesIndex[maxStraightCardIndex]], 2) == 12) handValue = 9;
 				else handValue = 8;
 			}
@@ -340,12 +363,14 @@ struct Cards {
 				if (flag) handValue = 6;
 				else if (handValue < 3) handValue = 3;
 			}
-			if (maxDuplicateFacesCount == 3) handValue = 7;
+			if (maxDuplicateFacesCount == 3 && handValue < 7) handValue = 7;
 		}
+//		cout << "\n" << handValue;
 		
+//		cout << "\n\n";
 		return handValue;
 	}
-
+	
 };
 
 struct Player {
@@ -358,8 +383,8 @@ struct Player {
 		hand.clear();
 	}
 	
-	void print() {
-		hold = hand.get();
+	void info() {
+		hold = hand.getCards();
 		cout << name << endl
 			 << "\tcash:  " << cash << endl
 			 << "\tcards: " << hold << endl;
@@ -394,33 +419,66 @@ struct Pot {
 	}
 };
 
+int handCompare(string table, vector<Cards> cards, int type) {
+	int highCard = 0;
+	for (int i = 0; i < cards.size(); i++) cards[i].value(table);
+	switch (type) {
+		case 0:
+			for (Cards c : cards) {
+				if (c.highCardValue > highCard) highCard = c.highCardValue;
+			}
+			return highCard;
+		case 1:
+		case 2:
+		case 3:
+		case 6:
+		case 7:
+			for (Cards c : cards) {
+				if (c.maxDuplicateCardValue > highCard) highCard = c.maxDuplicateCardValue;
+			}
+			return highCard;
+		case 4:
+		case 8:
+			for (Cards c : cards) {
+				if (c.maxStraightCardValue > highCard) highCard = c.maxStraightCardValue;
+			}
+			return highCard;
+		case 5:
+			for (Cards c : cards) {
+				if (c.maxFlushCardValue > highCard) highCard = c.maxFlushCardValue;
+			}
+			return highCard;
+	}
+}
+
 void display() {
 	// adfs
 }
 
-bool inputChecker(string x, string y) {
-	bool b = false;
+bool inputChecker(string a, string b) {
+	bool result = false;
 	vector<string> array;
 	int start = 0, count = 0;
-	for (int i = 0; i < y.size(); i++) {
-		if (y[i] == ';') {
+	for (int i = 0; i < b.size(); i++) {
+		if (b[i] == ';') {
 			for (int j = start; j < i; j++) {
 				if (count >= array.size()) array.push_back("");
-				array[count] += y[j];
+				array[count] += b[j];
 			}
 			count++;
 			start = i + 1;
 		}
 	}
 	for (string s : array) {
-	    if (x == s) b = true;
+	    if (a == s) result = true;
 	}
-	return b;
+	return result;
 }
 
 int pokerTurn(bool isUser) {
 	int choice;
 	if (isUser) {
+		return 1;
 		do {
 			cout << "\n1. Check or Call\n2. Raise\n3. Fold\n > ";
 			getline(cin, x);
@@ -428,7 +486,7 @@ int pokerTurn(bool isUser) {
 		while (!inputChecker(x, "1;2;3;"));
 		choice = stoi(x);
 	}
-	else choice = 1;
+	else choice = rng(1, 1);
 	return choice;
 }
 
@@ -441,12 +499,31 @@ void poker() {
 	int bet = 1,
 		cbet, n, pId, dealer, turn, round, deal;
 	Cards c;
-	c.clear();
-	c.drop("10H QS AC 10S JS");
-	cout << endl << c.value("QH KS AS QS 10H");
+//	c.drop("QC KS 5D 4S AH");
+	cout << endl << c.value(" ");
 	cout << endl;
-//	system("pause");
+	system("pause");
 	system("cls");
+	
+//	vector<Cards> eee;
+//	while (true) {
+//		Cards uh, uhh;
+//		uh.shuffle();
+//		cout << uh.getCards() << endl
+//			 << uh.value() << "\n\n";
+//		uhh.clear();
+//		for (int i = 0; i < 7; i++) uhh.drop(uh.pop());
+//		eee.push_back(uhh);
+//		for (Cards ccc : eee) {
+//			cout << ccc.getCards() << endl
+//			 	 << ccc.value() << "\n\n";
+//		}
+//		if (eee[eee.size() - 1].value() > 4) break;
+////		system("pause");
+//		system("cls");
+//	}
+//	system("pause");
+	
 //    do {
 //	    cout << "Poker!\n"
 //	    	 << "Enter your name: ";
@@ -487,7 +564,7 @@ void poker() {
 			system("cls");
 			cout << "Initial Bet: " << bet << "\n\n"
 				 << "creating room...\n\n";
-			n = 6; // rng(2, 9);
+			n = 9; // rng(2, 9);
 			pId = rng(0, n - 1);
 			vector<Player> player;
 			for (int i = 0; i < n; i++) player.push_back({(i == pId ? name : "Player_" + to_string(i)), cash});
@@ -500,7 +577,7 @@ void poker() {
 			dealer = 1;//rng(0, n - 1);
 			cbet = bet;
 			round = 1;
-			system("pause");
+//			system("pause");
 			system("cls");
 			
 			while (round) {
@@ -508,6 +585,10 @@ void poker() {
 				cbet = bet * pow(2, floor(round / 3));
 				for (int i = 0; i < n; i++) {
 				    pot.bet(player[i].bet(0), i);
+				}
+				vector<bool> folds;
+				for (int i = 0; i < n; i++) {
+				    folds.push_back(false);
 				}
 				pot.info();
 				cout << "Round " << round << "\n"
@@ -523,8 +604,9 @@ void poker() {
 				turn = turner(turn, 1, n);
 				pot.bet(player[turn].bet(0), turn);
 				deal = 0;
-				system("pause");
+//				system("pause");
 				system("cls");
+				int foldsCount = 0, calls = 0, raise;
 				while (deal != 4) {
 					switch (deal) {
 						case 0:
@@ -545,11 +627,12 @@ void poker() {
 					}
 					deck.info();
 					table.info();
-					for (int i = 0; i < n; i++) player[i].print();
+					for (int i = 0; i < n; i++) player[i].info();
 					
-					int calls = 0, raise = 0, folds;
+					calls = 0, raise = 10;
 					while (true) {
-						cout << turn << "\n";
+						while (folds[turn]) turn = turner(turn, 1, n);
+//						cout << turn << " " << calls << "\n";
 						pot.info();
 						int choice = pokerTurn(turn == pId);
 						cout << player[turn].name << "'s Turn: " << player[turn].name;
@@ -557,35 +640,68 @@ void poker() {
 							case 1: // check, call
 								if (pot.playerBet[turn] < cbet) {
 									pot.bet(player[turn].bet(cbet - pot.playerBet[turn]), turn);
-									cout << " calls.\n";
+									cout << " calls to the current bet of " << cbet << ".\n";
 								}
-								else cout << " checks.\n";
+								else if (pot.playerBet[turn] == cbet) cout << " checks.\n";
+								else cout << "\n\n\nerror\n\n\n";
 								calls++;
 								break;
 							case 2: // raise
 								cbet += raise;
 								calls = 1;
-								pot.bet(player[turn].bet(cbet), turn);
-								cout << " raises.\n";
+								pot.bet(player[turn].bet(cbet - pot.playerBet[turn]), turn);
+								cout << " raises " << raise << ".\n";
 								break;
 							case 3: // fold
 								cout << " folds.\n";
-								folds++;
+								folds[turn] = true;
+								foldsCount++;
 						}
+						
 						turn = turner(turn, 1, n);
-						if (calls == n - folds || n - folds == 1) break;
+						if (calls == n - foldsCount || n - foldsCount == 1) break;
 					}
 					
-					system("pause");
+//					system("pause");
 					system("cls");
 					deal++;
-					if (n - folds == 1) break;
+					if (n - foldsCount == 1) break;
 				}
+				
+// check winner
+	// record all rankings in an array
+				cout << table.getCards() ;
+				cout << " : " << table.value() << endl;
+				vector<int> handRanks;
+				int num = 0;
+				for (int i = 0; i < calls; i++) {
+					while (folds[num]) num++;
+					cout << player[num].name << "\n";
+					cout << player[num].hand.getCards() << " : " ;
+					cout << player[num].hand.value() << " : " ;
+					cout << player[num].hand.value(table.getCards()) << endl;
+					handRanks.push_back(player[num].hand.value(table.getCards()));
+					num++;
+				}
+				for (int n : handRanks) cout << n << " ";
+				cout << endl;
+	// sort the array			
+				for (int i = 0; i < handRanks.size(); i++) {
+					for (int j = i + 1; j < handRanks.size(); j++) {
+						if (handRanks[i] <= handRanks[j]) {
+							int temp = handRanks[i];
+							handRanks[i] = handRanks[j];
+							handRanks[j] = temp;
+						}
+					}
+				}
+				for (int n : handRanks) cout << n << " ";
+				cout << endl;
 				
 				cout << "Round " << round << " End!\n"
 					 << "press Enter to proceed to the next round... (type [I give up] to exit to main menu)\n\n"
 					 << " > ";
-				getline(cin, x);
+//				getline(cin, x);
 				system("cls");
 				if (x == "I give up") break;
 				round++;
@@ -596,7 +712,7 @@ void poker() {
 				deck.refill();
 				deck.shuffle();
 				dealer = dealer == (n - 1) ? 0 : dealer + 1;
-				system("pause");
+//				system("pause");
 				system("cls");
 			}
 //		}
