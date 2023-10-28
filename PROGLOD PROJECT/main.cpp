@@ -13,21 +13,17 @@ string suits[4] = {"C", "S", "H", "D"};
 string faces[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 string stack[52] = {"2C", "2S", "2H", "2D", "3C", "3S", "3H", "3D", "4C", "4S", "4H", "4D", "5C", "5S", "5H", "5D", "6C", "6S", "6H", "6D", "7C", "7S", "7H", "7D", "8C", "8S", "8H", "8D", "9C", "9S", "9H", "9D", "10C", "10S", "10H", "10D", "JC", "JS", "JH", "JD", "QC", "QS", "QH", "QD", "KC", "KS", "KH", "KD", "AC", "AS", "AH", "AD"};
 
-string spacer(int n, char c = ' ')
-{
+string spacer(int n, char c = ' ') {
     string s = "";
-    for (int i = 0; i < n; i++)
-        s += c;
+    for (int i = 0; i < n; i++) s += c;
     return s;
 }
 
-int rng(int min, int max)
-{
+int rng(int min, int max) {
     return min + (rand() % (max - min + 1));
 }
 
-struct Cards
-{
+struct Cards {
     string cards[52] = {"2C", "2S", "2H", "2D", "3C", "3S", "3H", "3D", "4C", "4S", "4H", "4D", "5C", "5S", "5H", "5D", "6C", "6S", "6H", "6D", "7C", "7S", "7H", "7D", "8C", "8S", "8H", "8D", "9C", "9S", "9H", "9D", "10C", "10S", "10H", "10D", "JC", "JS", "JH", "JD", "QC", "QS", "QH", "QD", "KC", "KS", "KH", "KD", "AC", "AS", "AH", "AD"};
     string hold;
     vector<string> maxValue;
@@ -43,134 +39,109 @@ struct Cards
     vector<int> duplicateFaceIndexArray, duplicateFacesCountArray;
     int maxDuplicateFacesCount, maxDuplicateFaceIndex, handValue;
 
-    Cards(bool b = false)
-    {
+    Cards(bool b = false) {
         if (b)
             clear();
     }
 
-    void clear()
-    {
-        for (int i = 0; i < n; i++)
-        {
-            cards[i] = "";
-        }
+    void clear() {
+        for (int i = 0; i < n; i++) cards[i] = "";
         n = 0;
         hold = "";
         maxValue.clear();
-        highCardValue = 0, maxDuplicateCardValue = 0, maxStraightCardValue = 0, maxFlushCardValue = 0;
-        maxStraightCardIndex = 0, maxStraightCount = 0;
+        highCardValue = 0, 
+		maxDuplicateCardValue = 0, 
+		maxStraightCardValue = 0, 
+		maxFlushCardValue = 0;
+        maxStraightCardIndex = 0, 
+		maxStraightCount = 0;
         sortedFacesIndex.clear(),
         sortedFacesIndexValues.clear(),
         sortedSuitsIndex.clear(),
         sortedSuitsIndexValues.clear();
-        maxFlushCount = 0, maxFlushCardIndex = 0;
-        duplicateFaceIndexArray.clear(), duplicateFacesCountArray.clear();
-        maxDuplicateFacesCount = 0, maxDuplicateFaceIndex = 0, handValue = 0;
+        maxFlushCount = 0, 
+		maxFlushCardIndex = 0;
+        duplicateFaceIndexArray.clear(), 
+		duplicateFacesCountArray.clear();
+        maxDuplicateFacesCount = 0, 
+		maxDuplicateFaceIndex = 0, 
+		handValue = 0;
     }
 
-    string getCards()
-    {
+    string getCards() {
         hold = "";
-        for (int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; i++) {
             hold += cards[i];
-            if (i != n - 1)
-                hold += " ";
+            if (i != n - 1) hold += " ";
         }
         return hold;
     }
 
-    void info()
-    {
+    void info() {
         //cout << "There are currently " << n << " cards.\n";
-        for (int i = 0; i < n; i++)
-        {
-            cout << cards[i] << " ";
-        }
+        for (int i = 0; i < n; i++) cout << cards[i] << " ";
         cout << endl;
     }
 
-    void toTop(int x)
-    {
+    void toTop(int x) {
         hold = cards[x];
-        for (int i = x; i < n - 1; i++)
-        {
-            cards[i] = cards[i + 1];
-        }
+        for (int i = x; i < n - 1; i++) cards[i] = cards[i + 1];
         cards[n - 1] = hold;
     }
 
-    void toBottom(int x)
-    {
+    void toBottom(int x) {
         hold = cards[x];
-        for (int i = x; i > 0; i--)
-        {
-            cards[i] = cards[i - 1];
-        }
+        for (int i = x; i > 0; i--) cards[i] = cards[i - 1];
         cards[0] = hold;
     }
 
-    void shuffle()
-    {
-        for (int i = 0; i < 1000000; i++)
-        {
+    void shuffle() {
+        for (int i = 0; i < 1000000; i++) {
             toTop(rng(0, n - 1));
             toBottom(rng(0, n - 1));
         }
     }
 
-    string pop(bool b = false)
-    {
+    string pop(bool b = false) {
         hold = cards[n - 1];
-        if (b)
-            toTop(0);
+        if (b) toTop(0);
         cards[n - 1] = "";
         n--;
         return hold;
     }
 
-    void drop(string x, bool b = false)
-    {
+    void drop(string x, bool b = false) {
         cards[n] = x;
         if (b)
             toBottom(n);
         n++;
     }
 
-    void refill()
-    {
+    void refill() {
         clear();
-        for (int i = 0; i < 52; i++)
-            drop(stack[i]);
+        for (int i = 0; i < 52; i++) drop(stack[i]);
         n = sizeof(cards) / sizeof(cards[0]);
     }
 
-    int valueToInt(string s, int c)
-    {
-        switch (c)
-        {
+    int valueToInt(string s, int c) {
+        switch (c) {
         case 1:
             for (int i = 0; i < sizeof(stack); i++)
-                if (stack[i] == s)
-                    return i;
+                if (stack[i] == s) return i;
             break;
         case 2:
             for (int i = 0; i < sizeof(faces); i++)
-                if (faces[i] == s)
-                    return i;
+                if (faces[i] == s) return i;
             break;
         case 3:
             for (int i = 0; i < sizeof(suits); i++)
-                if (suits[i] == s)
-                    return i;
+                if (suits[i] == s) return i;
         }
 
         return -1;
     }
 
-    int value(string x = "")
-    {
+    int value(string x = "") {
         sortedFacesIndex.clear();
         sortedFacesIndexValues.clear();
         sortedSuitsIndex.clear();
@@ -178,58 +149,48 @@ struct Cards
         duplicateFaceIndexArray.clear();
         duplicateFacesCountArray.clear();
 
-        if (n == 0 && x == "")
-            return -1;
+        if (n == 0 && x == "") return -1;
 
+//		combine this struct's and the parameter's cards and put it into arr[0]
         x = getCards() + " " + x;
         stringstream ss(x);
         vector<vector<string>> arr(3);
         string line;
-
-        //                cout << "\n\n";
-        // put the strings into arr[0]
-        while (ss >> line)
-            arr[0].push_back(line);
+        
+        while (ss >> line) arr[0].push_back(line); 
         int nAll = arr[0].size();
-        //                cout << "arr[0]: " << arr[0].size() << "\n";
-        //                for (int i = 0; i < 2; i++) for (string s : arr[i]) cout << s << " ";
+//      cout << "arr[0]: " << arr[0].size() << "\n";
+//      for (int i = 0; i < 2; i++) for (string s : arr[i]) cout << s << " ";
 
-        // split the strings to two parts: arr[1] for the faces and arr[2] for the suits
+// split the strings to two parts: arr[1] for the faces and arr[2] for the suits
         line = "";
-        for (int i = 0; i < nAll; i++)
-        {
-            int count = 0;
-            for (int j = 0; j < arr[0][i].size(); j++)
-            {
-                line += arr[0][i][j];
-                if (j >= arr[0][i].size() - 2)
-                {
-                    arr[count == 0 ? 1 : 2].push_back(line);
+        for (int i = 0; i < nAll; i++) {
+			int count = 0;
+            for (int j = 0; j < arr[0][i].size(); j++) {
+				line += arr[0][i][j];
+                if (j >= arr[0][i].size() - 2) {
+					arr[count == 0 ? 1 : 2].push_back(line);
                     line = "";
                     count++;
                 }
             }
         }
-        //                cout << "\n\narr[1] and arr[2]:";
-        //                for (int i = 1; i < 3; i++) {
-        //                        cout << endl;
-        //                        for (string s : arr[i]) cout << s << " ";
-        //                }
-        //                cout << "\n\n" << spacer(50, '-');
+//      cout << "\n\narr[1] and arr[2]:";
+//     		for (int i = 1; i < 3; i++) {
+//               cout << endl;
+//               for (string s : arr[i]) cout << s << " ";
+//          }
+//  	cout << "\n\n" << spacer(50, '-');
 
-        // sort the indexes of arr[1] and put it in sortedFacesIndex
-        for (int i = 0; i < nAll; i++)
-            sortedFacesIndex.push_back(i);
-        //                cout << "\n\nsortedFacesIndex:\n";
-        //                for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
-        for (int i = 0; i < nAll; i++)
-        {
-            for (int j = i + 1; j < nAll; j++)
-            {
+// sort the indexes of arr[1] and put it in sortedFacesIndex
+        for (int i = 0; i < nAll; i++) sortedFacesIndex.push_back(i);
+//      cout << "\n\nsortedFacesIndex:\n";
+//      for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
+        for (int i = 0; i < nAll; i++) {
+            for (int j = i + 1; j < nAll; j++) {
                 if ((valueToInt(arr[1][sortedFacesIndex[j]], 2) > valueToInt(arr[1][sortedFacesIndex[i]], 2)) ||
-                    ((valueToInt(arr[1][sortedFacesIndex[j]], 2) == valueToInt(arr[1][sortedFacesIndex[i]], 2)) &&
-                     (valueToInt(arr[2][sortedFacesIndex[j]], 3) > valueToInt(arr[2][sortedFacesIndex[i]], 3))))
-                {
+                   ((valueToInt(arr[1][sortedFacesIndex[j]], 2) == valueToInt(arr[1][sortedFacesIndex[i]], 2)) &&
+                    (valueToInt(arr[2][sortedFacesIndex[j]], 3) > valueToInt(arr[2][sortedFacesIndex[i]], 3)))) {
                     int temp = sortedFacesIndex[i];
                     sortedFacesIndex[i] = sortedFacesIndex[j];
                     sortedFacesIndex[j] = temp;
@@ -237,26 +198,21 @@ struct Cards
             }
         }
         highCardValue = valueToInt(arr[0][sortedFacesIndex[0]], 1);
-        //                cout << "\n\nsortedFacesIndex:\n";
-        //                for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
+//      cout << "\n\nsortedFacesIndex:\n";
+//      for (int i = 0; i < nAll; i++) cout << sortedFacesIndex[i] << " ";
 
-        // find maxStraightIndex
-        for (int i = 0; i < nAll; i++)
-            sortedFacesIndexValues.push_back(valueToInt(arr[1][(sortedFacesIndex[i])], 2));
-        //                cout << "\n\nsortedFacesIndexValues:\n";
-        //                for (int i = 0; i < nAll; i++) cout << sortedFacesIndexValues[i] << " ";
+// find maxStraightIndex
+        for (int i = 0; i < nAll; i++) sortedFacesIndexValues.push_back(valueToInt(arr[1][(sortedFacesIndex[i])], 2));
+//      cout << "\n\nsortedFacesIndexValues:\n";
+//      for (int i = 0; i < nAll; i++) cout << sortedFacesIndexValues[i] << " ";
         int straightCount = 0, straightCardIndex = 0;
         maxStraightCount = 0, maxStraightCardIndex = 0;
-        for (int i = 0; i < nAll; i++)
-        {
-            if (sortedFacesIndexValues[i] == sortedFacesIndexValues[i + 1] + 1)
-            {
+        for (int i = 0; i < nAll; i++) {
+            if (sortedFacesIndexValues[i] == sortedFacesIndexValues[i + 1] + 1) {
                 straightCount++;
             }
-            else if (sortedFacesIndexValues[i] != sortedFacesIndexValues[i + 1])
-            {
-                if (maxStraightCount < straightCount)
-                {
+            else if (sortedFacesIndexValues[i] != sortedFacesIndexValues[i + 1]) {
+                if (maxStraightCount < straightCount) {
                     maxStraightCount = straightCount;
                     maxStraightCardIndex = straightCardIndex;
                 }
@@ -265,99 +221,80 @@ struct Cards
             }
         }
         maxStraightCardValue = valueToInt(arr[0][sortedFacesIndex[maxStraightCardIndex]], 1);
-        //                cout << "\n\nmaxStraightCount: " << maxStraightCount << "\nmaxStraightCardIndex: " << maxStraightCardIndex;
+//      cout << "\n\nmaxStraightCount: " << maxStraightCount << "\nmaxStraightCardIndex: " << maxStraightCardIndex;
         vector<int> maxStraightIndex;
         int hold = maxStraightCardIndex;
         maxStraightIndex.push_back(hold);
-        for (int i = maxStraightCardIndex; i < nAll; i++)
-        {
-            if (sortedFacesIndexValues[hold] - 1 == sortedFacesIndexValues[i + 1])
-            {
+        for (int i = maxStraightCardIndex; i < nAll; i++) {
+            if (sortedFacesIndexValues[hold] - 1 == sortedFacesIndexValues[i + 1]) {
                 maxStraightIndex.push_back(i + 1);
                 hold = i + 1;
             }
         }
-        //                cout << "\n\nmaxStraightIndex:\n";
-        //                for (int i = 0; i < maxStraightCount + 1; i++) cout << maxStraightIndex[i] << " ";
-        //                cout << "\n\n" << spacer(50, '-');
+//      cout << "\n\nmaxStraightIndex:\n";
+//      for (int i = 0; i < maxStraightCount + 1; i++) cout << maxStraightIndex[i] << " ";
+//      cout << "\n\n" << spacer(50, '-');
 
-        // sort the indexes of arr[2] and put it in sortedSuitsIndex
-        for (int i = 0; i < nAll; i++)
-            sortedSuitsIndex.push_back(i);
-        for (int i = 0; i < nAll; i++)
-        {
-            for (int j = i + 1; j < nAll; j++)
-            {
+// sort the indexes of arr[2] and put it in sortedSuitsIndex
+        for (int i = 0; i < nAll; i++) sortedSuitsIndex.push_back(i);
+        for (int i = 0; i < nAll; i++) {
+            for (int j = i + 1; j < nAll; j++) {
                 if ((valueToInt(arr[2][sortedSuitsIndex[j]], 3) > valueToInt(arr[2][sortedSuitsIndex[i]], 3)) ||
-                    ((valueToInt(arr[2][sortedSuitsIndex[j]], 3) == valueToInt(arr[2][sortedSuitsIndex[i]], 3)) &&
-                     (valueToInt(arr[1][sortedSuitsIndex[j]], 2) > valueToInt(arr[1][sortedSuitsIndex[i]], 2))))
-                {
+                   ((valueToInt(arr[2][sortedSuitsIndex[j]], 3) == valueToInt(arr[2][sortedSuitsIndex[i]], 3)) &&
+                    (valueToInt(arr[1][sortedSuitsIndex[j]], 2) > valueToInt(arr[1][sortedSuitsIndex[i]], 2)))) {
                     int temp = sortedSuitsIndex[i];
                     sortedSuitsIndex[i] = sortedSuitsIndex[j];
                     sortedSuitsIndex[j] = temp;
                 }
             }
         }
-        //                cout << "\n\nsortedSuitsIndex:\n";
-        //                for (int i = 0; i < nAll; i++) cout << sortedSuitsIndex[i] << " ";
+//      cout << "\n\nsortedSuitsIndex:\n";
+//      for (int i = 0; i < nAll; i++) cout << sortedSuitsIndex[i] << " ";
 
-        // find maxFlushCardIndex
-        //cout << "check-2\n";
-        for (int i = 0; i < nAll; i++)
-            sortedSuitsIndexValues.push_back(valueToInt(arr[2][(sortedSuitsIndex[i])], 3));
-        //                cout << "\n\nsortedSuitsIndexValues:\n";
-        //                for (int i = 0; i < nAll; i++) cout << sortedSuitsIndexValues[i] << " ";
+// find maxFlushCardIndex
+        for (int i = 0; i < nAll; i++) sortedSuitsIndexValues.push_back(valueToInt(arr[2][(sortedSuitsIndex[i])], 3));
+//      cout << "\n\nsortedSuitsIndexValues:\n";
+//      for (int i = 0; i < nAll; i++) cout << sortedSuitsIndexValues[i] << " ";
         int flushCount = 0, flushCardIndex = 0, suitCount = 0;
         maxFlushCount = 0, maxFlushCardIndex;
         bool flag = 1;
-        for (int i = 0; i < nAll - 1; i++)
-        {
-            if (sortedSuitsIndexValues[i] == sortedSuitsIndexValues[i + 1])
-            {
+        for (int i = 0; i < nAll - 1; i++) {
+            if (sortedSuitsIndexValues[i] == sortedSuitsIndexValues[i + 1]) {
                 flushCount++;
-                if (flag)
-                {
+                if (flag) {
                     suitCount++;
                     flag = false;
                 }
             }
-            else
-            {
+            else {
                 flag = true;
                 flushCardIndex = i + 1;
                 flushCount = 0;
             }
-            if (maxFlushCount < flushCount)
-            {
+            if (maxFlushCount < flushCount) {
                 maxFlushCount = flushCount;
                 maxFlushCardIndex = flushCardIndex;
             }
         }
-        //                cout << "\n\nmaxFlushCount: " << maxFlushCount << "\nmaxFlushCardIndex: " << maxFlushCardIndex << "\nsuitCount: " << suitCount;
-        //cout << "check-1\n";
+//      cout << "\n\nmaxFlushCount: " << maxFlushCount << "\nmaxFlushCardIndex: " << maxFlushCardIndex << "\nsuitCount: " << suitCount;
         maxFlushCardValue = valueToInt(arr[0][sortedSuitsIndex[maxFlushCardIndex]], 1);
         vector<int> flushesIndex;
         hold = 0;
-        for (int i = 1; i < nAll; i++)
-        {
-            if (sortedSuitsIndexValues[i] == sortedSuitsIndexValues[hold])
-            {
-                if (flushesIndex.empty() || flushesIndex[flushesIndex.size() - 1] != hold)
-                {
+        for (int i = 1; i < nAll; i++) {
+            if (sortedSuitsIndexValues[i] == sortedSuitsIndexValues[hold]) {
+                if (flushesIndex.empty() || flushesIndex[flushesIndex.size() - 1] != hold) {
                     flushesIndex.push_back(hold);
                 }
             }
-            else
-            {
+            else {
                 hold = i;
             }
         }
-        //                cout << "\n\nflushesIndex:\n";
-        //                for (int i = 0; i < suitCount; i++) cout << flushesIndex[i] << " ";
-        //                cout << "\n\n" << spacer(50, '-');
+//      cout << "\n\nflushesIndex:\n";
+//      for (int i = 0; i < suitCount; i++) cout << flushesIndex[i] << " ";
+//      cout << "\n\n" << spacer(50, '-');
 
-        // find face duplicates
-        //cout << "check0\n";
+// find face duplicates
         int duplicateFacesAmount = 0,
                 duplicateFacesCount = 0,
                 duplicateFaceIndex = 0;
@@ -366,21 +303,16 @@ struct Cards
                 duplicateFacesCount = 0,
                 duplicateFaceIndex = 0;
             maxDuplicateFacesCount = 0, maxDuplicateFaceIndex = 0;
-            for (int i = 0; i < nAll; i++)
-            {
-                if (sortedFacesIndexValues[duplicateFaceIndex] == sortedFacesIndexValues[i + 1])
-                {
+            for (int i = 0; i < nAll; i++) {
+                if (sortedFacesIndexValues[duplicateFaceIndex] == sortedFacesIndexValues[i + 1]) {
                     duplicateFacesCount++;
                 }
-                else if (sortedFacesIndexValues[duplicateFaceIndex] != sortedFacesIndexValues[i + 1])
-                {
-                    if (maxDuplicateFacesCount < duplicateFacesCount)
-                    {
+                else if (sortedFacesIndexValues[duplicateFaceIndex] != sortedFacesIndexValues[i + 1]) {
+                    if (maxDuplicateFacesCount < duplicateFacesCount) {
                         maxDuplicateFacesCount = duplicateFacesCount;
                         maxDuplicateFaceIndex = duplicateFaceIndex;
                     }
-                    if (duplicateFacesCount > 0)
-                    {
+                    if (duplicateFacesCount > 0) {
                         duplicateFacesAmount++;
                         duplicateFaceIndexArray.push_back(duplicateFaceIndex);
                         duplicateFacesCountArray.push_back(duplicateFacesCount);
@@ -389,28 +321,25 @@ struct Cards
                     duplicateFacesCount = 0;
                 }
             }
-        //cout << maxDuplicateFaceIndex << endl;
+//        cout << maxDuplicateFaceIndex << endl;
         }
         while (maxDuplicateFaceIndex >= nAll);
-        //cout << "check\n";
-        //for (int i = 0; i < nAll; i++)
-        //    cout << arr[0][i] << " ";
-        //cout << "\n";
-        //for (int i = 0; i < nAll; i++)
-        //    cout << sortedFacesIndex[i] << " ";
-        //cout << "\n"
-        //     << maxDuplicateFaceIndex << "\n";
-        //cout << sortedFacesIndex[maxDuplicateFaceIndex] << "\n";
+//        cout << "check\n";
+//        for (int i = 0; i < nAll; i++)
+//            cout << arr[0][i] << " ";
+//        cout << "\n";
+//        for (int i = 0; i < nAll; i++)
+//            cout << sortedFacesIndex[i] << " ";
+//        cout << "\n"
+//             << maxDuplicateFaceIndex << "\n";
+//        cout << sortedFacesIndex[maxDuplicateFaceIndex] << "\n";
         maxDuplicateCardValue = valueToInt(arr[0][sortedFacesIndex[maxDuplicateFaceIndex]], 1);
-        //cout << "check2\n";
-        for (int i = 0; i < duplicateFacesAmount; i++)
-        {
-            for (int j = i + 1; j < duplicateFacesAmount; j++)
-            {
+//        cout << "check2\n";
+        for (int i = 0; i < duplicateFacesAmount; i++) {
+            for (int j = i + 1; j < duplicateFacesAmount; j++) {
                 if (duplicateFacesCountArray[i] < duplicateFacesCountArray[j] ||
-                    (duplicateFacesCountArray[i] == duplicateFacesCountArray[j] &&
-                     sortedFacesIndexValues[duplicateFaceIndexArray[i]] < sortedFacesIndexValues[duplicateFaceIndexArray[j]]))
-                {
+                   (duplicateFacesCountArray[i] == duplicateFacesCountArray[j] &&
+                    sortedFacesIndexValues[duplicateFaceIndexArray[i]] < sortedFacesIndexValues[duplicateFaceIndexArray[j]])) {
                     int temp = duplicateFacesCountArray[i];
                     duplicateFacesCountArray[i] = duplicateFacesCountArray[j];
                     duplicateFacesCountArray[j] = temp;
@@ -420,62 +349,44 @@ struct Cards
                 }
             }
         }
-        //                cout << "\n\nmaxDuplicateFaceIndex: " << maxDuplicateFaceIndex
-        //                         << "\nmaxDuplicateFacesCount: " << maxDuplicateFacesCount
-        //                         << "\nduplicateFacesAmount: " << duplicateFacesAmount
-        //                         << "\n\nduplicateFaceIndexArray and duplicateFacesCountArray:";
-        //                for (int i = 0; i < duplicateFacesAmount; i++) {
-        //                        cout << endl << duplicateFaceIndexArray[i] << " " << duplicateFacesCountArray[i];
-        //                }
-        //                cout << "\n\n" << spacer(50, '-');
+//      cout << "\n\nmaxDuplicateFaceIndex: " << maxDuplicateFaceIndex
+//               << "\nmaxDuplicateFacesCount: " << maxDuplicateFacesCount
+//                         << "\nduplicateFacesAmount: " << duplicateFacesAmount
+//                         << "\n\nduplicateFaceIndexArray and duplicateFacesCountArray:";
+//                for (int i = 0; i < duplicateFacesAmount; i++) {
+//                        cout << endl << duplicateFaceIndexArray[i] << " " << duplicateFacesCountArray[i];
+//                }
+//                cout << "\n\n" << spacer(50, '-');
 
-        // find handValue
+// find handValue
         handValue = -1;
-        if (maxStraightCount >= 4)
-        {
-            if (maxFlushCount >= 5 && sortedFacesIndex[maxStraightCardIndex] == sortedSuitsIndex[maxFlushCardIndex])
-            {
+        if (maxStraightCount >= 4) {
+            if (maxFlushCount >= 5 && sortedFacesIndex[maxStraightCardIndex] == sortedSuitsIndex[maxFlushCardIndex]) {
                 if (valueToInt(arr[1][sortedFacesIndex[maxStraightCardIndex]], 2) == 12)
                     handValue = 9;
-                else
-                    handValue = 8;
+                else handValue = 8;
             }
-            else
-                handValue = 4;
+            else handValue = 4;
         }
-        else if (handValue < 5)
-        {
+        else if (handValue < 5) {
             handValue = 0;
-            if (maxFlushCount >= 5)
-                handValue = 5;
-            if (maxDuplicateFacesCount == 1)
-            {
+            if (maxFlushCount >= 5) handValue = 5;
+            if (maxDuplicateFacesCount == 1) {
                 bool flag = false;
-                for (int i = 1; i < duplicateFacesAmount; i++)
-                {
-                    if (duplicateFacesCountArray[i] == 1)
-                        flag = true;
+                for (int i = 1; i < duplicateFacesAmount; i++) {
+                    if (duplicateFacesCountArray[i] == 1) flag = true;
                 }
-                if (flag)
-                    handValue = 2;
-                else if (handValue < 1)
-                    handValue = 1;
+                if (flag) handValue = 2;
+                else if (handValue < 1) handValue = 1;
             }
-            if (maxDuplicateFacesCount == 2)
-            {
+            if (maxDuplicateFacesCount == 2) {
                 bool flag = false;
-                for (int i = 1; i < duplicateFacesAmount; i++)
-                {
-                    if (duplicateFacesCountArray[i] == 1)
-                        flag = true;
-                }
-                if (flag)
-                    handValue = 6;
-                else if (handValue < 3)
-                    handValue = 3;
+                for (int i = 1; i < duplicateFacesAmount; i++) 
+                    if (duplicateFacesCountArray[i] == 1) flag = true;
+                if (flag) handValue = 6;
+                else if (handValue < 3) handValue = 3;
             }
-            if (maxDuplicateFacesCount == 3 && handValue < 7)
-                handValue = 7;
+            if (maxDuplicateFacesCount == 3 && handValue < 7) handValue = 7;
         }
         //                cout << "\n" << handValue;
 
@@ -491,39 +402,33 @@ struct Player
     int cash;
     Cards hand;
 
-    Player(string n, int c) : name(n), cash(c)
-    {
+    Player(string n, int c) : name(n), cash(c) {
         hand.clear();
     }
 
-    void info()
-    {
+    void info() {
         hold = hand.getCards();
         cout << name << endl
              << "\tcash:  " << cash << endl
              << "\tcards: " << hold << endl;
     }
 
-    int bet(int x)
-    {
+    int bet(int x) {
         cash -= x;
         return x;
     }
 };
 
-struct Pot
-{
+struct Pot {
     int cash = 0;
     vector<int> playerBet;
 
-    void info()
-    {
+    void info() {
         for (int n : playerBet)
             cout << n << " ";
     }
 
-    int bet(int x, int id)
-    {
+    int bet(int x, int id) {
         cash += x;
         if (id >= playerBet.size())
             playerBet.push_back(x);
@@ -532,8 +437,7 @@ struct Pot
         return x;
     }
 
-    int clear()
-    {
+    int clear() {
         int x = cash;
         cash = 0;
         playerBet.clear();
@@ -541,46 +445,49 @@ struct Pot
     }
 };
 
-int handCompare(string table, vector<Cards> cards, int type)
-{
+int handCompare(string table, vector<Player> players, int value) {
     int highCard = 0;
-    for (int i = 0; i < cards.size(); i++)
-        cards[i].value(table);
-    switch (type)
-    {
+    for (int i = 0; i < players.size(); i++) players[i].hand.value(table);
+    int index = -1;
+    switch (value) {
     case 0:
-        for (Cards c : cards)
-        {
-            if (c.highCardValue > highCard)
-                highCard = c.highCardValue;
-        }
-        return highCard;
+        for (int i = 0; i < players.size(); i++) {
+            if (players[i].hand.highCardValue > highCard) {
+				highCard = players[i].hand.highCardValue;
+				index = i;
+			}
+		}
+    	cout << "check1";
+        return index;
     case 1:
     case 2:
     case 3:
     case 6:
     case 7:
-        for (Cards c : cards)
-        {
-            if (c.maxDuplicateCardValue > highCard)
-                highCard = c.maxDuplicateCardValue;
-        }
-        return highCard;
+        for (int i = 0; i < players.size(); i++) {
+            if (players[i].hand.maxDuplicateCardValue > highCard) {
+                highCard = players[i].hand.maxDuplicateCardValue;
+				index = i;
+			}
+		}
+        return index;
     case 4:
     case 8:
-        for (Cards c : cards)
-        {
-            if (c.maxStraightCardValue > highCard)
-                highCard = c.maxStraightCardValue;
-        }
-        return highCard;
+        for (int i = 0; i < players.size(); i++){
+            if (players[i].hand.maxStraightCardValue > highCard) {
+                highCard = players[i].hand.maxStraightCardValue;
+				index = i;
+			}
+		}
+        return index;
     case 5:
-        for (Cards c : cards)
-        {
-            if (c.maxFlushCardValue > highCard)
-                highCard = c.maxFlushCardValue;
-        }
-        return highCard;
+        for (int i = 0; i < players.size(); i++) {
+            if (players[i].hand.maxFlushCardValue > highCard) {
+                highCard = players[i].hand.maxFlushCardValue;
+				index = i;
+			}
+		}
+        return index;
     }
 }
 
@@ -619,14 +526,13 @@ bool inputChecker(string a, string b)
 int pokerTurn(bool isUser)
 {
     int choice;
-    if (isUser)
-    {
+    if (isUser) {
         //return 1;
-        do
-        {
+        do {
             cout << "\n1. Check or Call\n2. Raise\n3. Fold\n > ";
             getline(cin, x);
-        } while (!inputChecker(x, "1;2;3;"));
+        } 
+		while (!inputChecker(x, "1;2;3;"));
         choice = stoi(x);
     }
     else
@@ -634,14 +540,12 @@ int pokerTurn(bool isUser)
     return choice;
 }
 
-int turner(int num, int plus, int max)
-{
+int turner(int num, int plus, int max) {
     num += plus;
     return num % max;
 }
 
-void poker()
-{
+void poker() {
     int bet = 1,
         cbet, n, pId, dealer, turn, round, deal;
     Cards c;
@@ -842,12 +746,13 @@ void poker()
                 break;
         }
 
-        // check winner
+        cout << "Round " << round << "\n"
+        	 << "Community Cards:\n"
+        	 << table.getCards()
+        	 << " : " << table.value() << "\n\n";
+        
         // record all rankings in an array
-        cout << "Round " << round << "\n";
-        cout << table.getCards();
-        cout << " : " << table.value() << endl;
-        vector<int> handRanks;
+        vector<int> handRanks, handRanksIndex;
         int num = 0;
         int hold = 1;
         while (hold--) 
@@ -859,15 +764,17 @@ void poker()
                     num++;
                 cout << player[num].name << "\n";
                 cout << player[num].hand.getCards() << " : ";
-                cout << player[num].hand.value() << " : ";
-                cout << player[num].hand.value(table.getCards()) << endl;
+//                cout << player[num].hand.value() << " : ";
+                cout << player[num].hand.value(table.getCards()) << "\n";
                 handRanks.push_back(player[num].hand.value(table.getCards()));
+                handRanksIndex.push_back(num);
                 num++;
             }
         }
-        for (int n : handRanks)
-            cout << n << " ";
-        cout << endl;
+//        for (int n : handRanks)
+//            cout << n << " ";
+//        cout << endl;
+
         // sort the array
         for (int i = 0; i < handRanks.size(); i++)
         {
@@ -881,11 +788,22 @@ void poker()
                 }
             }
         }
-        for (int n : handRanks)
-            cout << n << " ";
-        cout << endl;
+//        for (int n : handRanks)
+//            cout << n << " ";
+//        cout << endl;
 
-        cout << "Round " << round << " End!\n"
+		// check for winner
+		int winnerIndex;
+		if (handRanks.size() == 1) winnerIndex = handRanksIndex[0];
+		else {
+//			vector<int> highs;
+//			if (highs)
+//			for (int i = 0; i < handRanks.size(); i++) if (handRanks[i] == handRanks[0]) highs.push_back(handRanks[i]);
+			winnerIndex = handCompare(table.getCards(), player, handRanks[0]);
+		}
+		
+        cout << "\n\nRound " << round << " End!\n"
+        	 << player[winnerIndex].name << " wins!\n\n"
              << "press Enter to proceed to the next round... (type [I give up] to exit to main menu)\n\n"
              << " > ";
         getline(cin, x);
