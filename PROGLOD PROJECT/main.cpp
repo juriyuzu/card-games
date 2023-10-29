@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <cmath>
+#include <Windows.h>
 using namespace std;
 
 int cash = 1000;
@@ -407,15 +408,18 @@ struct Cards {
     }
 };
 
-struct Player
-{
+struct Player {
     string name;
     string hold;
     int cash;
     Cards hand;
+    int chance[3];
 
     Player(string n, int c) : name(n), cash(c) {
         hand.clear();
+        chance[0] = rng(1, 1000);
+        chance[1] = rng(1, 500);
+        chance[2] = rng(1, 1000);
     }
 
     void info() {
@@ -556,12 +560,15 @@ bool inputChecker(string a, string b)
     return result;
 }
 
-int pokerTurn(bool isUser, int &raise)
+int pokerTurn(bool isUser, int &raise, Player player, int prevBet, int currBet)
 {
     int choice;
     if (isUser) {
         //return 1;
-        cout << "\n1. Check or Call\n2. Raise\n3. Fold\n > ";
+        cout << "\nCurrent Bet: " << currBet
+			 << "\n Your cash: " << player.cash
+        	 << "\nYour cards: " << player.hand.getCards()
+			 << "\n1. Check or Call\n2. Raise\n3. Fold\n > ";
         do {
             getline(cin, x);
         } 
@@ -577,14 +584,19 @@ int pokerTurn(bool isUser, int &raise)
 				catch (exception e) {
 					continue;
 				}
+				if (raise > player.cash) {
+					cout << "\nYou dont have enough money\n > ";
+					continue;
+				}
 				break;
 	        }
 		}
     }
     else {
-    	int arr[] = {1, 15, 2, 1, 3, 4};
+    	int arr[] = {1, player.chance[0], 2, player.chance[1], 3, player.chance[2]};
+    	if (prevBet == currBet) arr[5] = 0;
         choice = rngp(arr);
-        raise = rng(1, 5) * 10;
+        raise = rng(1, player.cash - currBet);
 	}
     return choice;
 }
@@ -685,7 +697,8 @@ void poker() {
     dealer = 1; //rng(0, n - 1);
     cbet = bet;
     round = 1;
-    system("pause");
+    cout << endl;
+	system("pause");
     system("cls");
 
     while (round)
@@ -744,19 +757,21 @@ void poker() {
             }
             //deck.info();
             table.info();
-            cout << "Your cards: " << player[pId].hand.getCards() << endl;
             //for (int i = 0; i < n; i++)
             //    player[i].info();
 
             calls = 0, raise = 0;
             while (true)
             {
-                while (folds[turn])
+                Sleep(1000);
+				while (folds[turn])
                     turn = turner(turn, 1, n);
                 //                                                cout << turn << " " << calls << "\n";
                 //pot.info();
-                int choice = pokerTurn(turn == pId, raise);
-                cout << player[turn].name << "'s Turn: " << player[turn].name;
+                int choice = pokerTurn(turn == pId, raise, player[turn], pot.playerBet[turn], cbet);
+                cout << player[turn].name << "'s Turn: ";
+				Sleep(1000);
+				cout << player[turn].name;
                 switch (choice)
                 {
                 case 1: // check, call
@@ -782,6 +797,8 @@ void poker() {
                     folds[turn] = true;
                     foldsCount++;
                 }
+                cout << player[turn].name << "'s Cash: " << player[turn].cash << "\n"
+					 << "Pot: " << pot.cash << "\n";
 
                 turn = turner(turn, 1, n);
                 if (calls == n - foldsCount || n - foldsCount == 1)
