@@ -23,6 +23,18 @@ int rng(int min, int max) {
     return min + (rand() % (max - min + 1));
 }
 
+int rngp(int arr[]) {
+	vector<int> nums;
+	cout << endl;
+	for (int i = 0; i < sizeof(arr); i += 2) {
+		for (int j = 0; j < arr[i + 1]; j++) {
+			nums.push_back(arr[i]);
+//			cout << arr[i] << " ";
+		}
+	}
+	return nums[rng(0, nums.size() - 1)];
+}
+
 struct Cards {
     string cards[52] = {"2C", "2S", "2H", "2D", "3C", "3S", "3H", "3D", "4C", "4S", "4H", "4D", "5C", "5S", "5H", "5D", "6C", "6S", "6H", "6D", "7C", "7S", "7H", "7D", "8C", "8S", "8H", "8D", "9C", "9S", "9H", "9D", "10C", "10S", "10H", "10D", "JC", "JS", "JH", "JD", "QC", "QS", "QH", "QD", "KC", "KS", "KH", "KD", "AC", "AS", "AH", "AD"};
     string hold;
@@ -445,50 +457,71 @@ struct Pot {
     }
 };
 
-int handCompare(string table, vector<Player> players, int value) {
+int handCompare(Cards table, vector<Player> players, int value, vector<bool> folds) {
     int highCard = 0;
-    for (int i = 0; i < players.size(); i++) players[i].hand.value(table);
-    int index = -1;
-    switch (value) {
-    case 0:
-        for (int i = 0; i < players.size(); i++) {
-            if (players[i].hand.highCardValue > highCard) {
-				highCard = players[i].hand.highCardValue;
-				index = i;
+    for (int i = 0; i < players.size(); i++) players[i].hand.value(table.getCards());
+	int index = -1;
+	bool tableWins = false;
+    do {
+		switch (value) {
+	    case 0: // High Card
+	        tableWins = false;
+			for (int i = 0; i < players.size(); i++) {
+	            if (players[i].hand.highCardValue > highCard && !folds[i] && players[i].hand.handValue == value) {
+					highCard = players[i].hand.highCardValue;
+					index = i;
+				}
 			}
-		}
-    	cout << "check1";
-        return index;
-    case 1:
-    case 2:
-    case 3:
-    case 6:
-    case 7:
-        for (int i = 0; i < players.size(); i++) {
-            if (players[i].hand.maxDuplicateCardValue > highCard) {
-                highCard = players[i].hand.maxDuplicateCardValue;
-				index = i;
+	        break;
+	    case 1: // One Pair
+	    case 2: // Two Pair
+	    case 3: // Triad
+	    case 6: // Full House
+	    case 7: // Four of a Kind
+	        for (int i = 0; i < players.size(); i++) {
+	            if (players[i].hand.maxDuplicateCardValue > highCard && !folds[i] && players[i].hand.handValue == value) {
+	                highCard = players[i].hand.maxDuplicateCardValue;
+					index = i;
+				}
 			}
-		}
-        return index;
-    case 4:
-    case 8:
-        for (int i = 0; i < players.size(); i++){
-            if (players[i].hand.maxStraightCardValue > highCard) {
-                highCard = players[i].hand.maxStraightCardValue;
-				index = i;
+			if (table.maxDuplicateCardValue > highCard && table.handValue == value) {
+	            highCard = table.maxDuplicateCardValue;
+				value = 0;
+				tableWins = true;
 			}
-		}
-        return index;
-    case 5:
-        for (int i = 0; i < players.size(); i++) {
-            if (players[i].hand.maxFlushCardValue > highCard) {
-                highCard = players[i].hand.maxFlushCardValue;
-				index = i;
+	        break;
+	    case 4: // Straight
+	    case 8: // Straight Flush
+	    case 9: // Royal Flush
+	        for (int i = 0; i < players.size(); i++){
+	            if (players[i].hand.maxStraightCardValue > highCard && !folds[i] && players[i].hand.handValue == value) {
+	                highCard = players[i].hand.maxStraightCardValue;
+					index = i;
+				}
 			}
-		}
-        return index;
-    }
+			if (table.maxStraightCardValue > highCard && table.handValue == value) {
+	            highCard = table.maxStraightCardValue;
+				value = 0;
+				tableWins = true;
+			}
+	        break;
+	    case 5: // Flush
+	        for (int i = 0; i < players.size(); i++) {
+	            if (players[i].hand.maxFlushCardValue > highCard && !folds[i] && players[i].hand.handValue == value) {
+	                highCard = players[i].hand.maxFlushCardValue;
+					index = true;
+				}
+			}
+			if (table.maxFlushCardValue > highCard && table.handValue == value) {
+	            highCard = table.maxFlushCardValue;
+				value = 0;
+				tableWins = true;
+			}
+	    }
+	}
+	while (tableWins);
+	
+    return index;
 }
 
 void display()
@@ -523,20 +556,36 @@ bool inputChecker(string a, string b)
     return result;
 }
 
-int pokerTurn(bool isUser)
+int pokerTurn(bool isUser, int &raise)
 {
     int choice;
     if (isUser) {
         //return 1;
+        cout << "\n1. Check or Call\n2. Raise\n3. Fold\n > ";
         do {
-            cout << "\n1. Check or Call\n2. Raise\n3. Fold\n > ";
             getline(cin, x);
         } 
 		while (!inputChecker(x, "1;2;3;"));
         choice = stoi(x);
+    	if (choice == 2) {
+    		cout << "\nHow much do you want to Raise?\n > ";
+    		while (true) {
+	            try {
+					getline(cin, x);
+					raise = stoi(x);
+				}
+				catch (exception e) {
+					continue;
+				}
+				break;
+	        }
+		}
     }
-    else
-        choice = rng(1, 1);
+    else {
+    	int arr[] = {1, 15, 2, 1, 3, 4};
+        choice = rngp(arr);
+        raise = rng(1, 5) * 10;
+	}
     return choice;
 }
 
@@ -706,7 +755,7 @@ void poker() {
                     turn = turner(turn, 1, n);
                 //                                                cout << turn << " " << calls << "\n";
                 //pot.info();
-                int choice = pokerTurn(turn == pId);
+                int choice = pokerTurn(turn == pId, raise);
                 cout << player[turn].name << "'s Turn: " << player[turn].name;
                 switch (choice)
                 {
@@ -799,7 +848,7 @@ void poker() {
 //			vector<int> highs;
 //			if (highs)
 //			for (int i = 0; i < handRanks.size(); i++) if (handRanks[i] == handRanks[0]) highs.push_back(handRanks[i]);
-			winnerIndex = handCompare(table.getCards(), player, handRanks[0]);
+			winnerIndex = handCompare(table, player, handRanks[0], folds);
 		}
 		
         cout << "\n\nRound " << round << " End!\n"
