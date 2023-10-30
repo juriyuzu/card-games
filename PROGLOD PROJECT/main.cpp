@@ -93,7 +93,7 @@ struct Cards {
     void info() {
         //cout << "There are currently " << n << " cards.\n";
         for (int i = 0; i < n; i++) cout << cards[i] << " ";
-        cout << endl;
+//        cout << endl;
     }
 
     void toTop(int x) {
@@ -126,7 +126,7 @@ struct Cards {
     void drop(string x, bool b = false) {
         cards[n] = x;
         if (b)
-            toBottom(n);
+            toBottom(n); 
         n++;
     }
 
@@ -419,7 +419,7 @@ struct Player {
         hand.clear();
         chance[0] = rng(1, 1000);
         chance[1] = rng(1, 500);
-        chance[2] = rng(1, 1000);
+//        chance[2] = rng(1, 1000);
     }
 
     void info() {
@@ -461,7 +461,7 @@ struct Pot {
     }
 };
 
-int handCompare(Cards table, vector<Player> players, int value, vector<bool> folds) {
+int handCompare(Cards table, vector<Player> players, int value, vector<bool> folds, int &sideBetWinnerIndex) {
     int highCard = 0;
     for (int i = 0; i < players.size(); i++) players[i].hand.value(table.getCards());
 	int index = -1;
@@ -473,6 +473,7 @@ int handCompare(Cards table, vector<Player> players, int value, vector<bool> fol
 			for (int i = 0; i < players.size(); i++) {
 	            if (players[i].hand.highCardValue > highCard && !folds[i] && players[i].hand.handValue == value) {
 					highCard = players[i].hand.highCardValue;
+					sideBetWinnerIndex = index;
 					index = i;
 				}
 			}
@@ -485,6 +486,7 @@ int handCompare(Cards table, vector<Player> players, int value, vector<bool> fol
 	        for (int i = 0; i < players.size(); i++) {
 	            if (players[i].hand.maxDuplicateCardValue > highCard && !folds[i] && players[i].hand.handValue == value) {
 	                highCard = players[i].hand.maxDuplicateCardValue;
+					sideBetWinnerIndex = index;
 					index = i;
 				}
 			}
@@ -500,6 +502,7 @@ int handCompare(Cards table, vector<Player> players, int value, vector<bool> fol
 	        for (int i = 0; i < players.size(); i++){
 	            if (players[i].hand.maxStraightCardValue > highCard && !folds[i] && players[i].hand.handValue == value) {
 	                highCard = players[i].hand.maxStraightCardValue;
+					sideBetWinnerIndex = index;
 					index = i;
 				}
 			}
@@ -513,7 +516,8 @@ int handCompare(Cards table, vector<Player> players, int value, vector<bool> fol
 	        for (int i = 0; i < players.size(); i++) {
 	            if (players[i].hand.maxFlushCardValue > highCard && !folds[i] && players[i].hand.handValue == value) {
 	                highCard = players[i].hand.maxFlushCardValue;
-					index = true;
+					sideBetWinnerIndex = index;
+					index = i;
 				}
 			}
 			if (table.maxFlushCardValue > highCard && table.handValue == value) {
@@ -528,13 +532,11 @@ int handCompare(Cards table, vector<Player> players, int value, vector<bool> fol
     return index;
 }
 
-void display()
-{
+void display() {
     // adfs
 }
 
-bool inputChecker(string a, string b)
-{
+bool inputChecker(string a, string b) {
     bool result = false;
     vector<string> array;
     int start = 0, count = 0;
@@ -560,22 +562,25 @@ bool inputChecker(string a, string b)
     return result;
 }
 
-int pokerTurn(bool isUser, int &raise, Player player, int prevBet, int currBet)
-{
+int pokerTurn(bool isUser, int &raise, Player player, int prevBet, int currBet, int initBet) {
     int choice;
+    bool allInOnly = false;
+    if (player.cash < currBet - prevBet) allInOnly = true;
     if (isUser) {
         //return 1;
-        cout << "\nCurrent Bet: " << currBet
-			 << "\n Your cash: " << player.cash
-        	 << "\nYour cards: " << player.hand.getCards()
-			 << "\n1. Check or Call\n2. Raise\n3. Fold\n > ";
+        cout << "\n" << player.name << ":"
+			 << "\n\tPrevious Bet: " << prevBet
+			 << "\n\tCurrent Bet: " << currBet
+			 << "\n\tYour cash: " << player.cash
+        	 << "\n\tYour cards: " << player.hand.getCards()
+			 << "\n\t\t1. Check or Call\n\t\t2. Raise\n\t\t3. Fold\n\t\t > ";
         do {
             getline(cin, x);
         } 
 		while (!inputChecker(x, "1;2;3;"));
         choice = stoi(x);
     	if (choice == 2) {
-    		cout << "\nHow much do you want to Raise?\n > ";
+    		cout << "\n\t\tHow much do you want to Raise?	\n\t\t > ";
     		while (true) {
 	            try {
 					getline(cin, x);
@@ -584,8 +589,8 @@ int pokerTurn(bool isUser, int &raise, Player player, int prevBet, int currBet)
 				catch (exception e) {
 					continue;
 				}
-				if (raise > player.cash) {
-					cout << "\nYou dont have enough money\n > ";
+				if (raise > player.cash - (currBet - prevBet)) {
+					cout << "\n\t\tYou dont have enough money\n\t\t > ";
 					continue;
 				}
 				break;
@@ -594,9 +599,15 @@ int pokerTurn(bool isUser, int &raise, Player player, int prevBet, int currBet)
     }
     else {
     	int arr[] = {1, player.chance[0], 2, player.chance[1], 3, player.chance[2]};
-    	if (prevBet == currBet) arr[5] = 0;
+    	if (prevBet == currBet || prevBet == 0) arr[5] = 0;
+    	if (allInOnly) arr[1] = 0;
+		if (currBet - prevBet <= 0) arr[3] = 0;
         choice = rngp(arr);
-        raise = rng(1, player.cash - currBet);
+        cout << player.name << ": "
+			 << "\n\tPrevious Bet: " << prevBet
+			 << "\n\tCurrent Bet: " << currBet
+			 << "\n\tCash: " << player.cash;
+        raise = player.cash - currBet; //rng(1, player.cash - (currBet - prevBet));
 	}
     return choice;
 }
@@ -609,11 +620,11 @@ int turner(int num, int plus, int max) {
 void poker() {
     int bet = 1,
         cbet, n, pId, dealer, turn, round, deal;
-    Cards c;
+//    Cards c;
     //        c.drop("QC KS 5D 4S AH");
-    cout << endl
-         << c.value(" ");
-    cout << endl;
+//    cout << endl
+//         << c.value(" ");
+//    cout << endl;
     system("pause");
     system("cls");
 
@@ -681,10 +692,11 @@ void poker() {
     system("cls");
     cout << "Initial Bet: " << bet << "\n\n"
          << "creating room...\n\n";
-    n = 9; // rng(2, 9);
+    n = 2; // rng(2, 9);
     pId = rng(0, n - 1);
     vector<Player> player;
-    for (int i = 0; i < n; i++)
+    vector<int> bankruptIndex;
+	for (int i = 0; i < n; i++)
         player.push_back({(i == pId ? name : "Player_" + to_string(i)), cash});
     for (int i = 0; i < n; i++)
         if (i != pId)
@@ -763,22 +775,22 @@ void poker() {
             calls = 0, raise = 0;
             while (true)
             {
-                Sleep(1000);
+//                Sleep(1000);
 				while (folds[turn])
                     turn = turner(turn, 1, n);
                 //                                                cout << turn << " " << calls << "\n";
                 //pot.info();
-                int choice = pokerTurn(turn == pId, raise, player[turn], pot.playerBet[turn], cbet);
-                cout << player[turn].name << "'s Turn: ";
-				Sleep(1000);
-				cout << player[turn].name;
+                int choice = pokerTurn(turn == pId, raise, player[turn], pot.playerBet[turn], cbet, bet * pow(2, floor(round / 3)));
+//                cout << player[turn].name << "'s Turn: ";
+//				Sleep(1000);
+				cout << "\n\t" << player[turn].name;
                 switch (choice)
                 {
                 case 1: // check, call
                     if (pot.playerBet[turn] < cbet)
                     {
+                        cout << " calls to the current bet of " << cbet << ". -" << cbet - pot.playerBet[turn] << "\n";
                         pot.bet(player[turn].bet(cbet - pot.playerBet[turn]), turn);
-                        cout << " calls to the current bet of " << cbet << ".\n";
                     }
                     else if (pot.playerBet[turn] == cbet)
                         cout << " checks.\n";
@@ -789,16 +801,23 @@ void poker() {
                 case 2: // raise
                     cbet += raise;
                     calls = 1;
+                    if (cbet == player[turn].cash) {
+                    	cout << " went All-in! - " << cbet - pot.playerBet[turn] << "\n"
+                    		 << "\tThe current bet is now " << cbet << "\n";
+					}
+					else {
+						cout << " raises " << raise << ". -" << cbet - pot.playerBet[turn] << "\n"
+							 << "\tThe current bet is now " << cbet << "\n";
+					}
                     pot.bet(player[turn].bet(cbet - pot.playerBet[turn]), turn);
-                    cout << " raises " << raise << ".\n";
                     break;
                 case 3: // fold
                     cout << " folds.\n";
                     folds[turn] = true;
                     foldsCount++;
                 }
-                cout << player[turn].name << "'s Cash: " << player[turn].cash << "\n"
-					 << "Pot: " << pot.cash << "\n";
+                cout << "\tCash: " << player[turn].cash << "\n"
+					 << "\tPot: " << pot.cash << "\n";
 
                 turn = turner(turn, 1, n);
                 if (calls == n - foldsCount || n - foldsCount == 1)
@@ -859,18 +878,35 @@ void poker() {
 //        cout << endl;
 
 		// check for winner
-		int winnerIndex;
+		int winnerIndex, sideBetWinnerIndex;
 		if (handRanks.size() == 1) winnerIndex = handRanksIndex[0];
 		else {
 //			vector<int> highs;
 //			if (highs)
 //			for (int i = 0; i < handRanks.size(); i++) if (handRanks[i] == handRanks[0]) highs.push_back(handRanks[i]);
-			winnerIndex = handCompare(table, player, handRanks[0], folds);
+			winnerIndex = handCompare(table, player, handRanks[0], folds, sideBetWinnerIndex);
 		}
 		
+        
+		int potHold = pot.cash;
+		bool sideBetFlag;
+        for (int i = 0; i < player.size(); i++) {
+        	if (!folds[i] && i != winnerIndex && pot.playerBet[i] > pot.playerBet[winnerIndex]) {
+        		potHold -= cbet - pot.playerBet[winnerIndex];
+        		sideBetFlag = true;
+			}
+		}
+        
         cout << "\n\nRound " << round << " End!\n"
-        	 << player[winnerIndex].name << " wins!\n\n"
-             << "press Enter to proceed to the next round... (type [I give up] to exit to main menu)\n\n"
+        	 << player[winnerIndex].name << " wins!\n"
+        	 << player[winnerIndex].name << " gets " << potHold << "\n\n";
+        
+    	if (sideBetFlag) {
+    		cout << player[sideBetWinnerIndex].name << " wins the side bet!\n"
+        		 << player[sideBetWinnerIndex].name << " gets " << potHold << "\n\n";
+		}
+        
+        cout << "press Enter to proceed to the next round... (type [I give up] to exit to main menu)\n\n"
              << " > ";
         getline(cin, x);
         system("cls");
