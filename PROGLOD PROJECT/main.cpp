@@ -7,13 +7,16 @@
 #include <cmath>
 #include <Windows.h>
 #include <fstream>
+#include <limits>
 using namespace std;
 
 double cash = 1000;
 string name = "username", x;
+vector<string> names;
 string suits[4] = {"C", "S", "H", "D"};
 string faces[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 string stack[52] = {"2C", "2S", "2H", "2D", "3C", "3S", "3H", "3D", "4C", "4S", "4H", "4D", "5C", "5S", "5H", "5D", "6C", "6S", "6H", "6D", "7C", "7S", "7H", "7D", "8C", "8S", "8H", "8D", "9C", "9S", "9H", "9D", "10C", "10S", "10H", "10D", "JC", "JS", "JH", "JD", "QC", "QS", "QH", "QD", "KC", "KS", "KH", "KD", "AC", "AS", "AH", "AD"};
+string combo[10] = {"High Card", "One Pair", "Two Pairs", "Triad", "Straight", "Flush", "Full House", "Four of a Kind", "Straight Flush", "Royal Straight Flush"};
 
 string spacer(int n, char c = ' ') {
     string s = "";
@@ -418,11 +421,9 @@ struct Player {
 
     Player(string n, int c) : name(n), cash(c) {
         hand.clear();
-//        chance[0] = rng(1, 1000);
-        chance[0] = 0;
+        chance[0] = rng(1, 1000);
         chance[1] = rng(1, 500);
-//        chance[2] = rng(1, 1000);
-		chance[2] = 0;
+        chance[2] = rng(1, 500);
     }
 
     void info() {
@@ -561,16 +562,23 @@ int handCompare(Cards table, vector<Player> players, int value, vector<bool> fol
     return index;
 }
 
-string fileExtractor(string fileName) {
+void fileReader(string fileName, vector<string> &arr) {
 	ifstream inputFile(fileName);
     if (!inputFile.is_open()) {
         std::cerr << "Failed to open the input file: " << fileName << std::endl;
     }
     string text, line;
-    while (getline(inputFile, line)) {
-    	text += line + "\n";
-	}
-	return text;
+    while (getline(inputFile, line)) arr.push_back(line);
+	inputFile.close();
+}
+
+void fileWriter(string fileName, vector<string> &arr) {
+	ofstream outputFile(fileName, ios::trunc);
+    if (!outputFile.is_open()) {
+        std::cerr << "Failed to open the input file: " << fileName << std::endl;
+    }
+    for (string s : arr) outputFile << s + '\n';
+	outputFile.close();
 }
 
 bool inputChecker(string a, string b) {
@@ -638,18 +646,15 @@ int pokerTurn(bool isUser, int &raise, Player player, int prevBet, int currBet, 
     }
     else {
     	int arr[] = {1, player.chance[0], 2, player.chance[1], 3, player.chance[2]};
-//    	cout << "chance: " << arr[1] << " " << arr[3] << " " << arr[5] << "\n";
-//		cout << currBet << ", " << initBet << "\n";
-    	if (allInOnly) arr[3] = 0;
-//		if (currBet - prevBet >= player.cash) arr[3] = 0;
+    	if (prevBet == currBet || allInOnly) arr[3] = 0;
 		if (prevBet == currBet || prevBet == 0 || currBet <= initBet) arr[5] = 0;
-//    	cout << "chance: " << arr[1] << " " << arr[3] << " " << arr[5] << "\n";
         choice = rngp(arr);
         cout << player.name << ": "
 			 << "\n\tPrevious Bet: " << prevBet
 			 << "\n\tCurrent Bet: " << currBet
 			 << "\n\tCash: " << player.cash;
-        raise = player.cash - (currBet - prevBet); //rng(1, player.cash - (currBet - prevBet));
+		int arr2[] = {player.cash - (currBet - prevBet), 1, (player.cash - (currBet - prevBet)) / rng(2, 10), 2};
+        raise = rng(1, rngp(arr2));
 	}
     return choice;
 }
@@ -660,35 +665,168 @@ int turner(int num, int plus, int max, vector<bool> bankruptIndex) {
     return num % max;
 }
 
+string nameGenerator() {
+	if (names.empty()) fileReader("nameList.txt", names);
+	int index = rng(0, names.size() - 1);
+	string name = names[index];
+	names.erase(names.begin() + index);
+	return name;
+}
+	
 void poker() {
-    int bet = 10;
-    system("pause");
+    HANDLE hConsoleInput = GetStdHandle(STD_INPUT_HANDLE);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD newPosition;
+	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+	int bet = 10;
+    cout << "Controls:\n"
+		 << "\t[SPACE]: switching between options\n"
+		 << "\t[ENTER]: selecting an option\n\n"
+		 << "Press [F11] to toggle fullscreen then enter to continue\n\n";
+	getline(cin, x);
     system("cls");
 
 
 	// prologue
-    do {
-        cout << "Poker!\n"
-             << "Enter your name: ";
-        getline(cin, name);
-        system("cls");
-        cout << "Hello, " << name << "!\n"
-             << "Is your name correct? [type yes to proceed] ";
-        getline(cin, x);
-        system("cls");
-    }
-    while (x != "yes");
+	vector<string> display;
+	vector<int> displayIndex;
+	fileReader("display.txt", display);
+	int sleepFlag = 1;
+    while (true) {
+		// name input
+		for (int i = 0; display[i] != "#```-divider-```#"; i++) {
+			Sleep(50 * sleepFlag);
+			cout << display[i] << "\n";
+		}
+		Sleep(1000 * sleepFlag);
+		cout << "\tWelcome to C++ Poker!\n\n";
+		Sleep(1000 * sleepFlag);
+		cout << "\tPlease state your name: ";
+		getline(cin, name);
+        cout << "\n\tHello, " << name << "!\n\n";
+		Sleep(1000 * sleepFlag);
+    	cout << "\tIs your name correct?\n\n";
+		int choice = 0;
+		bool enterKey = false, spaceKey = false;
+		while (GetAsyncKeyState(VK_RETURN) & 0x8000);
+		while (true) {
+	        switch (choice) {
+	        	case 0:
+	        		cout << "\t > Yes\n"
+	        			 << "\t   No";
+	        		break;
+	        	case 1:
+	        		cout << "\t   Yes\n"
+	        			 << "\t > No";
+	        		break;
+			}
+			while (true) {
+	        	if (GetAsyncKeyState(VK_SPACE) & 0x8000 && !spaceKey) {
+	        		spaceKey = true;
+					GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+					newPosition.X = consoleInfo.dwCursorPosition.X - 9;
+					newPosition.Y = consoleInfo.dwCursorPosition.Y - 1;
+					SetConsoleCursorPosition(hConsole, newPosition);
+					break;
+				}
+				else if (!(GetAsyncKeyState(VK_SPACE) & 0x8000)) spaceKey = false;
+				if (GetAsyncKeyState(VK_RETURN) & 0x8000) {
+	        		enterKey = true;
+					break;
+				}
+			}
+			if (enterKey) break;
+			if (spaceKey) choice = (choice + 1) % 2;
+		}
+		if (choice == 1) {
+        	cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			system("cls");
+			sleepFlag = 0;
+			continue;
+		}
+	    
+	    
+	    // save file checking
+	    bool hasSave = false;
+	    vector<string> saves;
+	    fileReader("saveFile.txt", saves);
+	    for (int i = 0; i < saves.size(); i += 2) {
+			if (saves[i] == name) {
+	    		hasSave = true;
+	    		cash = stod(saves[i + 1]);
+	    		break;
+			}
+		}
+		if (hasSave) {
+			cout << "\n\n\tWelcome back, " << name << "!\n";
+			Sleep(1000 * sleepFlag);
+		}
+		else {
+			cout << "\n\n\tWould you like to create a save file?\n\n";
+			enterKey = false, spaceKey = false, choice = 0;
+			while (GetAsyncKeyState(VK_RETURN) & 0x8000);
+			while (true) {
+		        switch (choice) {
+		        	case 0:
+		        		cout << "\t > Yes\n"
+		        			 << "\t   No, I am only a guest";
+		        		break;
+		        	case 1:
+		        		cout << "\t   Yes\n"
+		        			 << "\t > No, I am only a guest";
+		        		break;
+				}
+				while (true) {
+		        	if (GetAsyncKeyState(VK_SPACE) & 0x8000 && !spaceKey) {
+		        		spaceKey = true;
+						GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+						newPosition.X = consoleInfo.dwCursorPosition.X - 28;
+						newPosition.Y = consoleInfo.dwCursorPosition.Y - 1;
+						SetConsoleCursorPosition(hConsole, newPosition);
+						break;
+					}
+					else if (!(GetAsyncKeyState(VK_SPACE) & 0x8000)) spaceKey = false;
+					if (GetAsyncKeyState(VK_RETURN) & 0x8000) {
+		        		enterKey = true;
+						break;
+					}
+				}
+				if (enterKey) break;
+				if (spaceKey) choice = (choice + 1) % 2;
+			}
+			if (choice == 0) {
+				saves.push_back(name);
+				saves.push_back(to_string(cash));
+				fileWriter("saveFile.txt", saves);
+				cout << "\n\n\tSave File successfully created.\n";
+			}
+			else cout << "\n";
+		}
+		cout << "\n\t";
+		system("pause");
+		system("cls");
+		break;
+	}
+	// prologue end
     
     
     // body
     while (true) {
         // intro
-		cout << "Welcome to Poker, " << name << "!\n"
-                 << "Your current cash is $" << cash << "\n\n"
-                 << "\t | Play\n"
-                 << "\t | About\n"
-                 << "\t | Exit\n\n"
-                 << " > ";
+		int i = 1;
+		for (string s : display) {
+			if (s == "#```-divider-```#") i--;
+			else if (i == 0) {
+				Sleep(1000);
+				cout << s << "\n";
+			}
+			else if (i < 0) break;
+		}
+		GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
+		newPosition.X = 0;
+		newPosition.Y = 0;
+		SetConsoleCursorPosition(hConsole, newPosition);
         getline(cin, x);
         system("cls");
         
@@ -717,7 +855,7 @@ void poker() {
 			// initialize variables
 			cout << "Initial Bet: " << bet << "\n\n"
 		         << "creating room...\n\n";
-		    int n = 2, // rng(2, 9);
+		    int n = rng(2, 9),
 		    	pId = rng(0, n - 1),
 		    	dealer = rng(0, n - 1);
 		    Cards deck;
@@ -730,7 +868,7 @@ void poker() {
 			vector<Player> player;
 	        vector<bool> bankruptIndex, folds, allIns, preAllIns;
 			for (int i = 0; i < n; i++) {
-				player.push_back({(i == pId ? name : "Player_" + to_string(i)), cash});
+				player.push_back({(i == pId ? name : nameGenerator()), cash});
 				pot.bet(player[i].bet(0), i);
 				bankruptIndex.push_back(0);
 	            bankruptIndex.push_back(false);
@@ -739,6 +877,7 @@ void poker() {
 	            preAllIns.push_back(false);
 				if (i != pId) cout << player[i].name << " joined the room.\n";
 			}
+			cout << "\n";
 			system("pause");
 		    system("cls");
 		
@@ -883,14 +1022,14 @@ void poker() {
 						
 						// player turn increment
 						turn = turner(turn, 1, n, bankruptIndex);
-						cout << calls << "\n";
 						
 						
 						// player turn loop end checking
 						if (calls == n - foldsCount - startAllIns || n - foldsCount - startAllIns == 1) break;
 		            }
 		            // player turn loop end
-		            system("pause");
+		            cout << "\n";
+					system("pause");
 		            system("cls");
 		            
 		            
@@ -907,8 +1046,7 @@ void poker() {
 		    	// round cleanup opening
 		        cout << "Round " << round << "\n"
 		        	 << "Community Cards:\n"
-		        	 << table.getCards()
-		        	 << ": " << table.value() << "\n\n";
+		        	 << table.getCards() << "\n\n";
 		        		        
 
 		        // record all called rankings in an array
@@ -919,7 +1057,9 @@ void poker() {
 		            while (folds[num])
 		                num++;
 		            cout << player[num].name << "\n";
-		            cout << player[num].hand.getCards() << "\n\n";
+		            cout << player[num].hand.getCards() << ": "
+						 << combo[player[num].hand.value(table.getCards())] << "\n"
+						 << "\n";
 		            handRanks.push_back(player[num].hand.value(table.getCards()));
 		            handRanksIndex.push_back(num);
 		            num++;
@@ -958,14 +1098,14 @@ void poker() {
 		        // winner declaration
 		        cout << "\n\nRound " << round << " End!\n"
 		        	 << player[winnerIndex].name << " wins!\n"
-		        	 << player[winnerIndex].name << " gets " << potHold << "\n\n";
+		        	 << player[winnerIndex].name << " gets " << potHold << "\n";
 		        player[winnerIndex].cash += potHold;
 		        
 		        
 		        // side bet winner declaration
 		    	if (sideBetFlag) {
 		    		cout << player[sideBetWinnerIndex].name << " wins the side bet!\n"
-		        		 << player[sideBetWinnerIndex].name << " gets " << pot.cash - potHold << "\n\n";
+		        		 << player[sideBetWinnerIndex].name << " gets " << pot.cash - potHold << "\n";
 		        	player[sideBetWinnerIndex].cash += pot.cash - potHold;
 				}
 				
@@ -974,10 +1114,11 @@ void poker() {
 				for (int i = 0; i < n; i++) {
 					if (player[i].cash <= 0) {
 						bankruptIndex[i] = true;
-						n--;
 						cout << player[i].name << " went bankrupt...\n\tgoodbye " << player[i].name << "\n";
+						player.erase(player.begin() + i);
 					}
 				}
+				n = player.size();
 				cout << "\n\n\n";
 				
 		        
@@ -1017,8 +1158,20 @@ void poker() {
 		        for (int i = 0; i < n; i++) player[i].hand.clear();
 		        deck.refill();
 		        deck.shuffle();
+		        while (rng(0, 9) == 0) {
+		        	n++;
+					player.push_back({nameGenerator(), cash});
+					pot.bet(player[n].bet(0), n);
+					bankruptIndex.push_back(0);
+		            bankruptIndex.push_back(false);
+		            folds.push_back(false);
+		            allIns.push_back(false);
+		            preAllIns.push_back(false);
+					cout << player[n].name << " joined the room.\n";
+				}
 		        dealer = dealer == (n - 1) ? 0 : dealer + 1;
-		        system("pause");
+		        cout << "\n";
+				system("pause");
 		        system("cls");
 		    }
 		    // round loop end
@@ -1030,7 +1183,30 @@ void poker() {
 int main() {
     srand(time(0));
     poker();
-//	cout << fileExtractor("cardTemplate.txt");
+
+//	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	
+//	for (int i = 1; i < 255; i += 15) {
+//		SetConsoleTextAttribute(hConsole, i);
+//		cout << "                              \n";
+//	}
+	
+//	time_t currentTime = std::time(nullptr);
+//
+//    std::tm* timeInfo = std::localtime(&currentTime);
+//
+//    if (timeInfo) {
+//        int day = timeInfo->tm_mday;     // Day of the month (1-31)
+//        int month = timeInfo->tm_mon + 1; // Month (0-11, so add 1 for 1-12)
+//        int year = timeInfo->tm_year + 1900; // Year (since 1900)
+//
+//        // Print the day, month, and year
+//        std::cout << "Day: " << day << std::endl;
+//        std::cout << "Month: " << month << std::endl;
+//        std::cout << "Year: " << year << std::endl;
+//    } else {
+//        std::cerr << "Failed to get current time information." << std::endl;
+//    }
 
     return 0;
 }
