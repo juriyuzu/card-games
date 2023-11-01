@@ -833,7 +833,7 @@ void poker() {
 							else break;
 						}
 						if (calls == n - foldsCount - startAllIns) break;
-						cout << calls << "\n";
+
 						
 						// player turn decision
 		                int choice = pokerTurn(turn == pId, raise, player[turn], pot.playerBet[turn], cbet, bet * pow(2, floor(round / 3)));
@@ -919,8 +919,7 @@ void poker() {
 		            while (folds[num])
 		                num++;
 		            cout << player[num].name << "\n";
-		            cout << player[num].hand.getCards() << ": ";
-		            cout << player[num].hand.value(table.getCards()) << "\n";
+		            cout << player[num].hand.getCards() << "\n\n";
 		            handRanks.push_back(player[num].hand.value(table.getCards()));
 		            handRanksIndex.push_back(num);
 		            num++;
@@ -979,7 +978,7 @@ void poker() {
 						cout << player[i].name << " went bankrupt...\n\tgoodbye " << player[i].name << "\n";
 					}
 				}
-				cout << "\n";
+				cout << "\n\n\n";
 				
 		        
 		        // round closing
@@ -992,7 +991,7 @@ void poker() {
 		        	break;
 				}
 				else if (n == 1) {
-					float temp = rng(100, 200) / 100;
+					double temp = rng(100, 200) / 100;
 					cout << "CONGRATULATIONS\n"
 						 << "You defeated all your opponents!\n\n"
 						 << "Bonus Reward: Total Cash * " << temp << "\n\n";
