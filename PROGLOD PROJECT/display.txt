@@ -19,63 +19,355 @@
 |                                                                                                                                                                              |
 V                                                                                                                                                                              V
 #```-divider-```#
+	1
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                             XX                                     XXXXX                       XXXX          |
+|      ______                                                                               XXX                                  XXXXX                       XXXXX             |
+|     /      \    __        __                                                             XX                                 XXXX                        XXXX                 |
+|    |  $$$$$$\  |  \      |  \                                                          XX                                XXX                         XXXX                    |
+|    | $$   \$$__| $$__  __| $$__                                                      XXX                              XXX                      XXXXXXX                       |
+|    | $$     |    $$  \|    $$  \                                                    XX                            XXXX          XXXX         XXX           XXXXXX            |
+|    | $$   __ \$$$$$$$$ \$$$$$$$$                                                  XXX                           XXX          XXXXXXXX       XX            XXXXXXXXX          |
+|    | $$__/  \  | $$      | $$                                                   XXX                           XX          XXXXXXXX XXX       X     XXX    XXX    XXXX        |
+|     \$$    $$   \$$       \$$                                                  XX     XXXXXXXX                 X         XXXXX      XXXX     XX    XXX   XXX       XXX       |
+|      \$$$$$$                                                                  XX     XXXXXXXXXXX                XX                    XXXX    XX   XXXX  XXX        XX       |
+|                                                                              XX     XXXX      XXX  XX            XXXXX                 XXX     XX    XXX  XXX       XX       |
+|     _______             __                                                  XX      XXX        XXXXXXX               XXX       XX       XX      X     XX   XXX     XXX       |
+|    |       \           |  \                                               XXX       XXX      XXXXXXX                    XX     XXXX    XXX      XX    XXX   XXXXXXXXX        |
+|    | $$$$$$$\  ______  | $$   __   ______    ______                      XX         XXX     XXXXXX                       XXX    XXXXXXXXXX       XX    XX     XXXXXX         |
+|    | $$__/ $$ /      \ | $$  /  \ /      \  /      \                    XXX         XXXX       XXX                         XXX    XXXXXXX         X    XXX                   |
+|    | $$    $$|  $$$$$$\| $$_/  $$|  $$$$$$\|  $$$$$$\                     XXX        XXXXXXXXXXXX                            XX                    X    XXX                  |
+|    | $$$$$$$ | $$  | $$| $$   $$ | $$    $$| $$   \$$                       XXXX        XXXXXXX                               XX                   XX   X                    |
+|    | $$      | $$__/ $$| $$$$$$\ | $$$$$$$$| $$                               XXXXXX                                           XXX                  X                        |
+|    | $$       \$$    $$| $$  \$$\ \$$     \| $$                               X    XXX                                           XX                 XX                       |
+|     \$$        \$$$$$$  \$$   \$$  \$$$$$$$ \$$                              XX      XXXX                                         XX                 X                       |
+|                                                                             XX          XXX                                        XX                XX                      |
+|                                                                           XXX              XXXXX                                    XX                XX                     |
+|                                                                           X                    XXXXX                                 XX                XX                    |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                       XXXX                                  XX               X                    |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|  _  |  |XX|  _  |  |  |XXXXXXXXXX                          XXX                                 XX              XX                   |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|   __|  |XX|     |_   _|XXXXXXXXX                              XXX                               XX              X                   |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|__|XX|_____|__|__|X|_|XXXXXXXXX                                  XXXXX                            XX             XX                  |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                      XXX                           XX             X                  |
+|                                                                     XX                                         XX                           XX            XX                 |
+|                          _____ _____ _ _ _    _____ _____        XXX                                             XXX                         XX            X                 |
+|                         |  |  |     | | | |  |_   _|     |      XX    XX                                           XXX                         X            X                |
+|                         |     |  |  | | | |    | | |  |  |     XX    XXXX                                            XXX                        X           X                |
+|                         |__|__|_____|_____|    |_| |_____|    XX      XXX     XXX                                      XX                       XX          XX               |
+|                                                              XX        XXX XXXXXXX                                      XXX                      XX          XX              |
+|                                                              X    XXX   XXXXXXXX                                          XXXX                     X          XX             |
+|                                _____ __    _____ __ __      X     XXXXXXXXXX                                                 XXX                   XXX         X             |
+|                               |  _  |  |  |  _  |  |  |    XX        XXXXXXXXXX                                                 XX                   XX        XX            |
+|                               |   __|  |__|     |_   _|     XXXX          XXXXXX                                                 XXXX                 XX        XX           |
+|                               |__|  |_____|__|__| |_|          XXXXX                                                                XXXX               X         X           |
+|                                                                   XXXXXXX                                                               X X             XX        X          |
+|                                                                    X    XXXXXXXX                                                           XXX           XXX       X         |
+|                                 _____ _____ _____ _____ _____      XX          XXXXXXXX                                                      XXX           XX       X        |
+|                                |  _  | __  |     |  |  |_   _|      X                 XXXXXXXXXX                                               XXX          XX      XX       |
+|                                |     | __ -|  |  |  |  | | |        XX                         XXXXXXXX                                          XXXX         XX     XX      |
+|                                |__|__|_____|_____|_____| |_|         X                                XXXXXXXXXXX                                   XXXX       XX     X      |
+|                                                                      XX                                         XXXXXXXX                               XXXX     XX    XX     |
+|                                                                       X                                                XXXXXXXXXXX                        XXXXX   XX   X     |
+|                                           _____ __ __ _____ _____     X               XXX                                        XXXXXX                        XX   XX XX    |
+|                                          |   __|  |  |     |_   _|    XX           XXXXXX                                             XXXXXXX                   XXX  XX XX   |
+|                                          |   __|-   -|-   -| | |       X       XXXXXXXX                                                      XXXXXXXXX            XX  XX X   |
+|                                          |_____|__|__|_____| |_|       X     XXXXX XXX                                                                XXXXXXXX      XXXXXXX  |
+|                                                                        XX   XXX    XXX                                                                       XXXXXXX  XXXXX  |
+|                                                                         X    XXXX  XXX                                                                             XXXXXXXXX |
+|                                                                         XX    XXXXXXXX                                                                                 XXXXXX|
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+#```-divider-```#
+	2
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                             XX                                     XXXXX                       XXXX          |
+|      ______                                                                               XXX                                  XXXXX                       XXXXX             |
+|     /      \    __        __                                                             XX                                 XXXX                        XXXX                 |
+|    |  $$$$$$\  |  \      |  \                                                          XX                                XXX                         XXXX                    |
+|    | $$   \$$__| $$__  __| $$__                                                      XXX                              XXX                      XXXXXXX                       |
+|    | $$     |    $$  \|    $$  \                                                    XX                            XXXX          XXXX         XXX           XXXXXX            |
+|    | $$   __ \$$$$$$$$ \$$$$$$$$                                                  XXX                           XXX          XXXXXXXX       XX            XXXXXXXXX          |
+|    | $$__/  \  | $$      | $$                                                   XXX                           XX          XXXXXXXX XXX       X     XXX    XXX    XXXX        |
+|     \$$    $$   \$$       \$$                                                  XX     XXXXXXXX                 X         XXXXX      XXXX     XX    XXX   XXX       XXX       |
+|      \$$$$$$                                                                  XX     XXXXXXXXXXX                XX                    XXXX    XX   XXXX  XXX        XX       |
+|                                                                              XX     XXXX      XXX  XX            XXXXX                 XXX     XX    XXX  XXX       XX       |
+|     _______             __                                                  XX      XXX        XXXXXXX               XXX       XX       XX      X     XX   XXX     XXX       |
+|    |       \           |  \                                               XXX       XXX      XXXXXXX                    XX     XXXX    XXX      XX    XXX   XXXXXXXXX        |
+|    | $$$$$$$\  ______  | $$   __   ______    ______                      XX         XXX     XXXXXX                       XXX    XXXXXXXXXX       XX    XX     XXXXXX         |
+|    | $$__/ $$ /      \ | $$  /  \ /      \  /      \                    XXX         XXXX       XXX                         XXX    XXXXXXX         X    XXX                   |
+|    | $$    $$|  $$$$$$\| $$_/  $$|  $$$$$$\|  $$$$$$\                     XXX        XXXXXXXXXXXX                            XX                    X    XXX                  |
+|    | $$$$$$$ | $$  | $$| $$   $$ | $$    $$| $$   \$$                       XXXX        XXXXXXX                               XX                   XX   X                    |
+|    | $$      | $$__/ $$| $$$$$$\ | $$$$$$$$| $$                               XXXXXX                                           XXX                  X                        |
+|    | $$       \$$    $$| $$  \$$\ \$$     \| $$                               X    XXX                                           XX                 XX                       |
+|     \$$        \$$$$$$  \$$   \$$  \$$$$$$$ \$$                              XX      XXXX                                         XX                 X                       |
+|                                                                             XX          XXX                                        XX                XX                      |
+|                                                                           XXX              XXXXX                                    XX                XX                     |
+|                                                                           X                    XXXXX                                 XX                XX                    |
+|                                         _____ __    _____ __ __         XX                       XXXX                                  XX               X                    |
+|                                        |  _  |  |  |  _  |  |  |        XX                          XXX                                 XX              XX                   |
+|                                        |   __|  |__|     |_   _|      XXX                              XXX                               XX              X                   |
+|                                        |__|  |_____|__|__| |_|       XX                                  XXXXX                            XX             XX                  |
+|                                                                      XX                                      XXX                           XX             X                  |
+|                                                                     XX                                         XX                           XX            XX                 |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                             XXX                         XX            X                 |
+|XXXXXXXXXXXXXXXXXXXXXXXXX|  |  |     | | | |XX|_   _|     |XXXXXXXX    XX                                           XXX                         X            X                |
+|XXXXXXXXXXXXXXXXXXXXXXXXX|     |  |  | | | |XXXX| |X|  |  |XXXXXXX    XXXX                                            XXX                        X           X                |
+|XXXXXXXXXXXXXXXXXXXXXXXXX|__|__|_____|_____|XXXX|_|X|_____|XXXXXX      XXX     XXX                                      XX                       XX          XX               |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX        XXX XXXXXXX                                      XXX                      XX          XX              |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX    XXX   XXXXXXXX                                          XXXX                     X          XX             |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     XXXXXXXXXX                                                 XXX                   XXX         X             |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|  _  |  |XX|  _  |  |  |XXXXXX        XXXXXXXXXX                                                 XX                   XX        XX            |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|   __|  |XX|     |_   _|XXXXXXXXX          XXXXXX                                                 XXXX                 XX        XX           |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|__|XX|_____|__|__|X|_|XXXXXXXXXXXXXXX                                                                XXXX               X         X           |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                                               X X             XX        X          |
+|                                                                    X    XXXXXXXX                                                           XXX           XXX       X         |
+|                                 _____ _____ _____ _____ _____      XX          XXXXXXXX                                                      XXX           XX       X        |
+|                                |  _  | __  |     |  |  |_   _|      X                 XXXXXXXXXX                                               XXX          XX      XX       |
+|                                |     | __ -|  |  |  |  | | |        XX                         XXXXXXXX                                          XXXX         XX     XX      |
+|                                |__|__|_____|_____|_____| |_|         X                                XXXXXXXXXXX                                   XXXX       XX     X      |
+|                                                                      XX                                         XXXXXXXX                               XXXX     XX    XX     |
+|                                                                       X                                                XXXXXXXXXXX                        XXXXX   XX   X     |
+|                                           _____ __ __ _____ _____     X               XXX                                        XXXXXX                        XX   XX XX    |
+|                                          |   __|  |  |     |_   _|    XX           XXXXXX                                             XXXXXXX                   XXX  XX XX   |
+|                                          |   __|-   -|-   -| | |       X       XXXXXXXX                                                      XXXXXXXXX            XX  XX X   |
+|                                          |_____|__|__|_____| |_|       X     XXXXX XXX                                                                XXXXXXXX      XXXXXXX  |
+|                                                                        XX   XXX    XXX                                                                       XXXXXXX  XXXXX  |
+|                                                                         X    XXXX  XXX                                                                             XXXXXXXXX |
+|                                                                         XX    XXXXXXXX                                                                                 XXXXXX|
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+#```-divider-```#
+	3
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                             XX                                     XXXXX                       XXXX          |
+|      ______                                                                               XXX                                  XXXXX                       XXXXX             |
+|     /      \    __        __                                                             XX                                 XXXX                        XXXX                 |
+|    |  $$$$$$\  |  \      |  \                                                          XX                                XXX                         XXXX                    |
+|    | $$   \$$__| $$__  __| $$__                                                      XXX                              XXX                      XXXXXXX                       |
+|    | $$     |    $$  \|    $$  \                                                    XX                            XXXX          XXXX         XXX           XXXXXX            |
+|    | $$   __ \$$$$$$$$ \$$$$$$$$                                                  XXX                           XXX          XXXXXXXX       XX            XXXXXXXXX          |
+|    | $$__/  \  | $$      | $$                                                   XXX                           XX          XXXXXXXX XXX       X     XXX    XXX    XXXX        |
+|     \$$    $$   \$$       \$$                                                  XX     XXXXXXXX                 X         XXXXX      XXXX     XX    XXX   XXX       XXX       |
+|      \$$$$$$                                                                  XX     XXXXXXXXXXX                XX                    XXXX    XX   XXXX  XXX        XX       |
+|                                                                              XX     XXXX      XXX  XX            XXXXX                 XXX     XX    XXX  XXX       XX       |
+|     _______             __                                                  XX      XXX        XXXXXXX               XXX       XX       XX      X     XX   XXX     XXX       |
+|    |       \           |  \                                               XXX       XXX      XXXXXXX                    XX     XXXX    XXX      XX    XXX   XXXXXXXXX        |
+|    | $$$$$$$\  ______  | $$   __   ______    ______                      XX         XXX     XXXXXX                       XXX    XXXXXXXXXX       XX    XX     XXXXXX         |
+|    | $$__/ $$ /      \ | $$  /  \ /      \  /      \                    XXX         XXXX       XXX                         XXX    XXXXXXX         X    XXX                   |
+|    | $$    $$|  $$$$$$\| $$_/  $$|  $$$$$$\|  $$$$$$\                     XXX        XXXXXXXXXXXX                            XX                    X    XXX                  |
+|    | $$$$$$$ | $$  | $$| $$   $$ | $$    $$| $$   \$$                       XXXX        XXXXXXX                               XX                   XX   X                    |
+|    | $$      | $$__/ $$| $$$$$$\ | $$$$$$$$| $$                               XXXXXX                                           XXX                  X                        |
+|    | $$       \$$    $$| $$  \$$\ \$$     \| $$                               X    XXX                                           XX                 XX                       |
+|     \$$        \$$$$$$  \$$   \$$  \$$$$$$$ \$$                              XX      XXXX                                         XX                 X                       |
+|                                                                             XX          XXX                                        XX                XX                      |
+|                                                                           XXX              XXXXX                                    XX                XX                     |
+|                                                                           X                    XXXXX                                 XX                XX                    |
+|                                         _____ __    _____ __ __         XX                       XXXX                                  XX               X                    |
+|                                        |  _  |  |  |  _  |  |  |        XX                          XXX                                 XX              XX                   |
+|                                        |   __|  |__|     |_   _|      XXX                              XXX                               XX              X                   |
+|                                        |__|  |_____|__|__| |_|       XX                                  XXXXX                            XX             XX                  |
+|                                                                      XX                                      XXX                           XX             X                  |
+|                                                                     XXX                                        XX                           XX            XX                 |
+|                           _____ _____ _ _ _    _____ _____        XXX                                            XXX                         XX            X                 |
+|                          |  |  |     | | | |  |_   _|     |      XX    X                                           XXX                         X            X                |
+|                          |     |  |  | | | |    | | |  |  |     XX    XXX                                            XXX                        X           X                |
+|                          |__|__|_____|_____|    |_| |_____|    XX      XX     XXX                                      XX                       XX          XX               |
+|                                                               XX        XX XXXXXXX                                      XXX                      XX          XX              |
+|                                                               X    XXX  XXXXXXXX                                          XXXX                     X          XX             |
+|                                 _____ __    _____ __ __      X     XXXXXXXXX                                                 XXX                   XXX         X             |
+|                                |  _  |  |  |  _  |  |  |    XX        XXXXXXXXX                                                 XX                   XX        XX            |
+|                                |   __|  |__|     |_   _|     XXXX         XXXXXX                                                 XXXX                 XX        XX           |
+|                                |__|  |_____|__|__| |_|          XXXXX                                                               XXXX               X         X           |
+|                                                                    XXXXXX                                                               X X             XX        X          |
+|                                                                     X   XXXXXXXX                                                           XXX           XXX       X         |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX          XXXXXXXX                                                      XXX           XX       X        |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|  _  | __  |     |  |  |_   _|XXXXXXX                 XXXXXXXXXX                                               XXX          XX      XX       |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|     | __ -|  |  |  |  |X| |XXXXXXXXXX                         XXXXXXXX                                          XXXX         XX     XX      |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|__|__|_____|_____|_____|X|_|XXXXXXXXXX                                XXXXXXXXXXX                                   XXXX       XX     X      |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX                                         XXXXXXXX                               XXXX     XX    XX     |
+|                                                                       X                                                XXXXXXXXXXX                        XXXXX   XX   X     |
+|                                           _____ __ __ _____ _____     X               XXX                                        XXXXXX                        XX   XX XX    |
+|                                          |   __|  |  |     |_   _|    XX           XXXXXX                                             XXXXXXX                   XXX  XX XX   |
+|                                          |   __|-   -|-   -| | |       X       XXXXXXXX                                                      XXXXXXXXX            XX  XX X   |
+|                                          |_____|__|__|_____| |_|       X     XXXXX XXX                                                                XXXXXXXX      XXXXXXX  |
+|                                                                        XX   XXX    XXX                                                                       XXXXXXX  XXXXX  |
+|                                                                         X    XXXX  XXX                                                                             XXXXXXXXX |
+|                                                                         XX    XXXXXXXX                                                                                 XXXXXX|
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+#```-divider-```#
+	4
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                             XX                                     XXXXX                       XXXX          |
+|      ______                                                                               XXX                                  XXXXX                       XXXXX             |
+|     /      \    __        __                                                             XX                                 XXXX                        XXXX                 |
+|    |  $$$$$$\  |  \      |  \                                                          XX                                XXX                         XXXX                    |
+|    | $$   \$$__| $$__  __| $$__                                                      XXX                              XXX                      XXXXXXX                       |
+|    | $$     |    $$  \|    $$  \                                                    XX                            XXXX          XXXX         XXX           XXXXXX            |
+|    | $$   __ \$$$$$$$$ \$$$$$$$$                                                  XXX                           XXX          XXXXXXXX       XX            XXXXXXXXX          |
+|    | $$__/  \  | $$      | $$                                                   XXX                           XX          XXXXXXXX XXX       X     XXX    XXX    XXXX        |
+|     \$$    $$   \$$       \$$                                                  XX     XXXXXXXX                 X         XXXXX      XXXX     XX    XXX   XXX       XXX       |
+|      \$$$$$$                                                                  XX     XXXXXXXXXXX                XX                    XXXX    XX   XXXX  XXX        XX       |
+|                                                                              XX     XXXX      XXX  XX            XXXXX                 XXX     XX    XXX  XXX       XX       |
+|     _______             __                                                  XX      XXX        XXXXXXX               XXX       XX       XX      X     XX   XXX     XXX       |
+|    |       \           |  \                                               XXX       XXX      XXXXXXX                    XX     XXXX    XXX      XX    XXX   XXXXXXXXX        |
+|    | $$$$$$$\  ______  | $$   __   ______    ______                      XX         XXX     XXXXXX                       XXX    XXXXXXXXXX       XX    XX     XXXXXX         |
+|    | $$__/ $$ /      \ | $$  /  \ /      \  /      \                    XXX         XXXX       XXX                         XXX    XXXXXXX         X    XXX                   |
+|    | $$    $$|  $$$$$$\| $$_/  $$|  $$$$$$\|  $$$$$$\                     XXX        XXXXXXXXXXXX                            XX                    X    XXX                  |
+|    | $$$$$$$ | $$  | $$| $$   $$ | $$    $$| $$   \$$                       XXXX        XXXXXXX                               XX                   XX   X                    |
+|    | $$      | $$__/ $$| $$$$$$\ | $$$$$$$$| $$                               XXXXXX                                           XXX                  X                        |
+|    | $$       \$$    $$| $$  \$$\ \$$     \| $$                               X    XXX                                           XX                 XX                       |
+|     \$$        \$$$$$$  \$$   \$$  \$$$$$$$ \$$                              XX      XXXX                                         XX                 X                       |
+|                                                                             XX          XXX                                        XX                XX                      |
+|                                                                           XXX              XXXXX                                    XX                XX                     |
+|                                                                           X                    XXXXX                                 XX                XX                    |
+|                                         _____ __    _____ __ __         XX                       XXXX                                  XX               X                    |
+|                                        |  _  |  |  |  _  |  |  |        XX                          XXX                                 XX              XX                   |
+|                                        |   __|  |__|     |_   _|      XXX                              XXX                               XX              X                   |
+|                                        |__|  |_____|__|__| |_|       XX                                  XXXXX                            XX             XX                  |
+|                                                                      XX                                      XXX                           XX             X                  |
+|                                                                     XXX                                        XX                           XX            XX                 |
+|                           _____ _____ _ _ _    _____ _____        XXX                                            XXX                         XX            X                 |
+|                          |  |  |     | | | |  |_   _|     |      XX    X                                           XXX                         X            X                |
+|                          |     |  |  | | | |    | | |  |  |     XX    XXX                                            XXX                        X           X                |
+|                          |__|__|_____|_____|    |_| |_____|    XX      XX     XXX                                      XX                       XX          XX               |
+|                                                               XX        XX XXXXXXX                                      XXX                      XX          XX              |
+|                                                               X    XXX  XXXXXXXX                                          XXXX                     X          XX             |
+|                                 _____ __    _____ __ __      X     XXXXXXXXX                                                 XXX                   XXX         X             |
+|                                |  _  |  |  |  _  |  |  |    XX        XXXXXXXXX                                                 XX                   XX        XX            |
+|                                |   __|  |__|     |_   _|     XXXX         XXXXXX                                                 XXXX                 XX        XX           |
+|                                |__|  |_____|__|__| |_|          XXXXX                                                               XXXX               X         X           |
+|                                                                    XXXXXX                                                               X X             XX        X          |
+|                                                                    XX   XXXXXXXX                                                           XXX           XXX       X         |
+|                                 _____ _____ _____ _____ _____      XX          XXXXXXXX                                                      XXX           XX       X        |
+|                                |  _  | __  |     |  |  |_   _|      X                 XXXXXXXXXX                                               XXX          XX      XX       |
+|                                |     | __ -|  |  |  |  | | |        XX                         XXXXXXXX                                          XXXX         XX     XX      |
+|                                |__|__|_____|_____|_____| |_|         X                                XXXXXXXXXXX                                   XXXX       XX     X      |
+|                                                                      XX                                         XXXXXXXX                               XXXX     XX    XX     |
+|                                                                       X                                                XXXXXXXXXXX                        XXXXX   XX   X     |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX               XXX                                        XXXXXX                        XX   XX XX    |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|   __|  |  |     |_   _|XXXXXX           XXXXXX                                             XXXXXXX                   XXX  XX XX   |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|   __|-   -|-   -|X| |XXXXXXXX       XXXXXXXX                                                      XXXXXXXXX            XX  XX X   |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|_____|__|__|_____|X|_|XXXXXXXX     XXXXX XXX                                                                XXXXXXXX      XXXXXXX  |
+|XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   XXX    XXX                                                                       XXXXXXX  XXXXX  |
+|                                                                         X    XXXX  XXX                                                                             XXXXXXXXX |
+|                                                                         XX    XXXXXXXX                                                                                 XXXXXX|
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+#```-divider-```#
+	5
 +------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                                                                              |
-|          CCCCCCCCCCCCC                                                PPPPPPPPPPPPPPPPP        OOOOOOOOO     KKKKKKKKK    KKKKKKKEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRR     |
-|       CCC::::::::::::C                                                P::::::::::::::::P     OO:::::::::OO   K:::::::K    K:::::KE::::::::::::::::::::ER::::::::::::::::R    |
-|     CC:::::::::::::::C                                                P::::::PPPPPP:::::P  OO:::::::::::::OO K:::::::K    K:::::KE::::::::::::::::::::ER::::::RRRRRR:::::R   |
-|    C:::::CCCCCCCC::::C       +++++++              +++++++             PP:::::P     P:::::PO:::::::OOO:::::::OK:::::::K   K::::::KEE::::::EEEEEEEEE::::ERR:::::R     R:::::R  |
-|   C:::::C       CCCCCC       +:::::+              +:::::+               P::::P     P:::::PO::::::O   O::::::OKK::::::K  K:::::KKK  E:::::E       EEEEEE  R::::R     R:::::R  |
-|  C:::::C                     +:::::+              +:::::+               P::::P     P:::::PO:::::O     O:::::O  K:::::K K:::::K     E:::::E               R::::R     R:::::R  |
-|  C:::::C               +++++++:::::+++++++  +++++++:::::+++++++         P::::PPPPPP:::::P O:::::O     O:::::O  K::::::K:::::K      E::::::EEEEEEEEEE     R::::RRRRRR:::::R   |
-|  C:::::C               +:::::::::::::::::+  +:::::::::::::::::+         P:::::::::::::PP  O:::::O     O:::::O  K:::::::::::K       E:::::::::::::::E     R:::::::::::::RR    |
-|  C:::::C               +:::::::::::::::::+  +:::::::::::::::::+         P::::PPPPPPPPP    O:::::O     O:::::O  K:::::::::::K       E:::::::::::::::E     R::::RRRRRR:::::R   |
-|  C:::::C               +++++++:::::+++++++  +++++++:::::+++++++         P::::P            O:::::O     O:::::O  K::::::K:::::K      E::::::EEEEEEEEEE     R::::R     R:::::R  |
-|  C:::::C                     +:::::+              +:::::+               P::::P            O:::::O     O:::::O  K:::::K K:::::K     E:::::E               R::::R     R:::::R  |
-|   C:::::C       CCCCCC       +:::::+              +:::::+               P::::P            O::::::O   O::::::OKK::::::K  K:::::KKK  E:::::E       EEEEEE  R::::R     R:::::R  |
-|    C:::::CCCCCCCC::::C       +++++++              +++++++             PP::::::PP          O:::::::OOO:::::::OK:::::::K   K::::::KEE::::::EEEEEEEE:::::ERR:::::R     R:::::R  |
-|     CC:::::::::::::::C                                                P::::::::P           OO:::::::::::::OO K:::::::K    K:::::KE::::::::::::::::::::ER::::::R     R:::::R  |
-|       CCC::::::::::::C                                                P::::::::P             OO:::::::::OO   K:::::::K    K:::::KE::::::::::::::::::::ER::::::R     R:::::R  |
-|          CCCCCCCCCCCCC                                                PPPPPPPPPP               OOOOOOOOO     KKKKKKKKK    KKKKKKKEEEEEEEEEEEEEEEEEEEEEERRRRRRRR     RRRRRRR  |
+|                                                                                                                                                                       +      |
+|                                                                                                                                +                                             |
+|                                                                                                     .d8888b.  8888888b.  8888888888        d8888 88888888888 8888888888      |
+|                                                                                                    d88P  Y88b 888   Y88b 888              d88888     888     888             |
+|                                                                                           +        888    888 888    888 888             d88P888     888     888             |
+|                                                                                                    888        888   d88P 8888888        d88P 888     888     8888888         |
+|                                                                                                    888        8888888P"  888           d88P  888     888     888             |
+|                                                                                                    888    888 888 T88b   888          d88P   888     888     888             |
+|                                                                       +                            Y88b  d88P 888  T88b  888         d8888888888     888     888             |
+|                                                                                                     "Y8888P"  888   T88b 8888888888 d88P     888     888     8888888888      |
+|                                                                                                                                                 +                            |
+|                                                                                                                                                                              |
+|                                                                                                           d8888      8888888b.   .d88888b.   .d88888b.  888b     d888        |
+|                                                                                                          d88888      888   Y88b d88P" "Y88b d88P" "Y88b 8888b   d8888        |
+|                                                                                                         d88P888      888    888 888     888 888     888 88888b.d88888        |
+|                                                                                        +               d88P 888      888   d88P 888     888 888     888 888Y88888P888        |
+|                                                                                                       d88P  888      8888888P"  888     888 888     888 888 Y888P 888        |
+|                                                                                                      d88P   888      888 T88b   888     888 888     888 888  Y8P  888        |
+|                                                                                                     d8888888888      888  T88b  Y88b. .d88P Y88b. .d88P 888   "   888        |
+|                                                                           +                        d88P     888      888   T88b  "Y88888P"   "Y88888P"  888       888        |
+|                                                                                                                                                                              |
+|                                                                                                                                                                              |
+|                                                                                                                      +                               +                       |
 |                                                                                                                                                                              |
 |                                                                                                                                                                              |
 |                                                                                                                                                                              |
 |                                                                                                                                                                              |
+|                                                                                                                                +                                             |
+|                                                                                                                                                   +                          |
+|                                                                                                          +                                                    +              |
+|                                                                                                                                                                              |
+|                                                                      +                 +                                                                                     |
+|                                                                                                                                        +                                     |
 |                                                                                                                                                                              |
 |                                                                                                                                                                              |
+|                                                                                                                                                    .ooooo.                   |
+|                                                                                                                                                   d8888888b                  |
+|                                                                                                               +                                   888888888                  |
+|                                                                                                                                                   888888888                  |
+|                                                                                          +                                                 +      `Y8bod8P'                  |
 |                                                                                                                                                                              |
 |                                                                                                                                                                              |
+|                            +                                                                                                                                                 |
+|                                                                                                                                 +                                        +   |
 |                                                                                                                                                                              |
 |                                                                                                                                                                              |
+|     +         .|                                              .|         +                                    .|                                              .|             |
+|               | |                                 +           | |                                             | |                                  +          | |            |
+|               |'|            ._____                           |'|            ._____                +          |'|            ._____                           |'|            |
+|       ___    |  |            |.   |' .---"|           ___    |  |            |.   |' .---"|           ___    |  |            |.   |' .---"|           ___    |  |            |
+|    .-'   '-. |  |     .--'|  ||   | _|    |   _    .-'   '-. |  |     .--'|  ||   | _|    |   _    .-'   '-. |  |     .--'|  ||   | _|    |   _    .-'   '-. |  |     .--'|  |
+|  _.|  |    ||   '-__  |   |  |    ||      |.-'|  _.|  |    ||   '-__  |   |  |    ||      |.-'|  _.|  |    ||   '-__  |   |  |    ||      |.-'|  _.|  |    ||   '-__  |   |  |
+| |.    |    ||       | |   |  |    ||      ||' | |.    |    ||       | |   |  |    ||      ||' | |.    |    ||       | |   |  |    ||      ||' | |.    |    ||       | |   |  |
+|-'_    '    ""       '-'   '-.'    '`      ||__'-'     '    ""       '-'   '-.'    '`      ||__'-'     '    ""       '-'   '-.'    '`      ||__'-'     '    ""       '-'   '-.'
+#```-divider-```#
+	6
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 |                                                                                                                                                                              |
+|    +----------------------------+    +----------------------------+    +----------------------------+    +----------------------------+    +----------------------------+    |
+|    |                            |    |                            |    |                            |    |                            |    |                            |    |
+|    |                            |    |                            |    |                            |    |                            |    |                            |    |
+|    |                            |    |                            |    |                            |    |                            |    |                            |    |
+|    |                            |    |                            |    |                            |    |                            |    |                            |    |
+|    |                            |    |                            |    |                            |    |                            |    |                            |    |
+|    |                            |    |                            |    |                            |    |                            |    |                            |    |
+|    |                            |    |                            |    |                            |    |                            |    |                            |    |
+|    |                            |    |                            |    |                            |    |                            |    |                            |    |
+|    |                            |    |                            |    |                            |    |                            |    |                            |    |
+|    +----------------------------+    +----------------------------+    +----------------------------+    +----------------------------+    +----------------------------+    |
 |                                                                                                                                                                              |
+|    +----------------------------+    +------------------------------------------------------------------------------------------------+    +----------------------------+    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    +----------------------------+    |                                                                                                |    +----------------------------+    |
+|                                      |                                                                                                |                                      |
+|    +----------------------------+    |                                                                                                |    +----------------------------+    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    |                            |    |                                                                                                |    |                            |    |
+|    +----------------------------+    |                                                                                                |    +----------------------------+    |
+|                                      |                                                                                                |                                      |
+|                                      |                                                                                                |                                      |
+|                                      |                                                                                                |                                      |
+|                                      |                                                                                                |                                      |
+|                                      +------------------------------------------------------------------------------------------------+                                      |
 |                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
-|                                                                                                                                                                              |
+|                                                +--------------------+      +--------------------+      +--------------------+                                                |
+|                                                |                    |      |                    |      |                    |                                                |
+|                                                |                    |      |                    |      |                    |                                                |
+|                                                |                    |      |                    |      |                    |                                                |
+|                                                |                    |      |                    |      |                    |                                                |
+|                                                |                    |      |                    |      |                    |                                                |
+|                                                |                    |      |                    |      |                    |                                                |
+|                                                |                    |      |                    |      |                    |                                                |
+|                                                |                    |      |                    |      |                    |                                                |
+|                                                |  call              |      |    raise           |      |     fold           |                                                |
+|                                                +--------------------+      +--------------------+      +--------------------+                                                |
 |                                                                                                                                                                              |
 +------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 #```-divider-```#
-asdf
+                         :
 #```-divider-```#
-asdf
+#```-divider-```#
+#```-divider-```#
